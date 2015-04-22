@@ -1,6 +1,6 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Vector;
 
 public class LabelPlacer {
@@ -15,7 +15,7 @@ public class LabelPlacer {
         int width = Integer.parseInt(sc.nextLine().substring(7));
         int height = Integer.parseInt(sc.nextLine().substring(8));
         int numberOfPoints = Integer.parseInt(sc.nextLine().substring(18));
-        List<Vector> inputList = new ArrayList<>();
+        Set<Vector> inputList = new HashSet<>();
         
         while(sc.hasNextLine()) {
             String line = sc.nextLine();

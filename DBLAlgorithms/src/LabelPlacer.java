@@ -38,6 +38,11 @@ public class LabelPlacer {
          * Todo: find optimal labels.
          */
         
+        RangeSearch<Integer, PointData> rs = new RangeSearch<Integer, PointData>();
+        
+        for (int i = 0; i < inputList.size(); i++)
+            rs.put(i, inputList.get(i));
+        
         int numberOfLabels = 0;
         System.out.println("number of labels: " + numberOfLabels);
         

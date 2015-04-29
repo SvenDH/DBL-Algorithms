@@ -1,19 +1,21 @@
 
 public class PointData {
-    public int x;
-    public int y;
+    int x;
+    int y;
     
-    boolean NW;
-    boolean NE;
-    boolean SW;
-    boolean SE;
+    boolean NW = true;
+    boolean NE = true;
+    boolean SW = true;
+    boolean SE = true;
     
-    public PointData (int x, int y) {
+    Label LabelNW = null;
+    Label LabelNE = null;
+    Label LabelSW = null;
+    Label LabelSE = null;
+    
+    PointData (int x, int y) {
         this.x = x;
         this.y = y;
-        NW = true;
-        NE = true;
-        SW = true;
-        SE = true;
     }
+
 }

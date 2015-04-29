@@ -6,7 +6,7 @@ import java.util.Vector;
 
 public class LabelPlacer {
     
-    private static RangeSearch<Integer, PointData> rs;
+    private static RangeTree<Integer> rs;
     private static List<PointData> inputList = new ArrayList<>();
     private static int numberOfPoints;
    
@@ -36,10 +36,10 @@ public class LabelPlacer {
     }
     
     static void buildRangeTree() {
-        rs = new RangeSearch<Integer, PointData>();
+        rs = new RangeTree<Integer>();
         
-        for (int i = 0; i < inputList.size(); i++) {
-            rs.put(i, inputList.get(i));
+        for (PointData point : inputList) {
+            rs.insert(point.x, point.y);
         }
     }
     

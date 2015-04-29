@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
 
-public class LabelPlacer {
+public class LabelPlacer {   
+    private final static int NB = 10000;
     
-    private static RangeTree<Integer> rs;
     private static List<PointData> inputList = new ArrayList<>();
     private static int numberOfPoints;
    
@@ -35,20 +35,22 @@ public class LabelPlacer {
         }
     }
     
-    static void buildRangeTree() {
-        rs = new RangeTree<Integer>();
-        
-        for (PointData point : inputList) {
-            rs.insert(point.x, point.y);
-        }
-    }
-    
     static void output() {
         int numberOfLabels = 0;
         System.out.println("number of labels: " + numberOfLabels);
         
         for (int i = 0; i < numberOfPoints; i++) {
-            System.out.println(inputList.get(i).x + " " + inputList.get(i).y + " NIL");
+            String dir = "NIL";
+            if (inputList.get(i).NW) 
+                dir = "NW";
+            else if (inputList.get(i).NE)
+                dir = "NE";
+            else if (inputList.get(i).SW)
+                dir = "SW";
+            else if (inputList.get(i).SE)
+                dir = "SE";
+            System.out.println
+                (inputList.get(i).x + " " + inputList.get(i).y + " " + dir);
         }
     }
     /**
@@ -58,10 +60,21 @@ public class LabelPlacer {
         Scanner sc = new Scanner(System.in);        
         parseInput(sc);
         
+        LabelSolver labelSolver;
         /*
-         * Todo: find optimal labels.
+         * Todo: chose best algorithm for numberOfPoints and model
          */
-        buildRangeTree();
+        if (numberOfPoints < NB) {
+            labelSolver = new BruteForceSolver();
+        } else {
+            labelSolver = new NonSolver();
+        /*
+         * Todo: find optimal labels efficiently.
+         */
+        }
+        
+        labelSolver.getLabeledPoints(inputList);
+        
         output();
     }
 }

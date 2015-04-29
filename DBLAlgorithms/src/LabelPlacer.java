@@ -7,10 +7,17 @@ import java.util.Vector;
 public class LabelPlacer {   
     private final static int NB = 10000;
     
-    private static List<PointData> inputList = new ArrayList<>();
-    private static int numberOfPoints;
-   
-    static void parseInput(Scanner sc) {
+    static void output() {
+        
+    }
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        List<PointData> inputList = new ArrayList<>();
+        int numberOfPoints;
+        
+        Scanner sc = new Scanner(System.in);        
         String line;
         line = sc.nextLine();
         System.out.println(line);
@@ -33,9 +40,22 @@ public class LabelPlacer {
             inputList.add( new PointData( Integer.parseInt(split[0]), 
                                         Integer.parseInt(split[1])));
         }
-    }
-    
-    static void output() {
+        
+        LabelSolver labelSolver;
+        /*
+         * Todo: chose best algorithm for numberOfPoints and model
+         */
+        if (numberOfPoints <= NB) {
+            labelSolver = new BruteForceSolver(width, height);
+        } else {
+            labelSolver = new NonSolver();
+        /*
+         * Todo: find optimal labels efficiently.
+         */
+        }
+        
+        labelSolver.getLabeledPoints(inputList);
+        
         int numberOfLabels = 0;
         System.out.println("number of labels: " + numberOfLabels);
         
@@ -52,29 +72,5 @@ public class LabelPlacer {
             System.out.println
                 (inputList.get(i).x + " " + inputList.get(i).y + " " + dir);
         }
-    }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);        
-        parseInput(sc);
-        
-        LabelSolver labelSolver;
-        /*
-         * Todo: chose best algorithm for numberOfPoints and model
-         */
-        if (numberOfPoints < NB) {
-            labelSolver = new BruteForceSolver();
-        } else {
-            labelSolver = new NonSolver();
-        /*
-         * Todo: find optimal labels efficiently.
-         */
-        }
-        
-        labelSolver.getLabeledPoints(inputList);
-        
-        output();
     }
 }

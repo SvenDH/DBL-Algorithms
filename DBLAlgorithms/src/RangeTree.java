@@ -42,7 +42,7 @@ public class RangeTree<Key extends Comparable<Key>>  {
     private Node insert(Node h, Key x, Key y) {
         if (h == null) return new Node(x, y);
         h.bst.put(y, x);
-        if (less(x, h.x)) h.left  = insert(h.left,  x, y);
+        if (lessEqual(x, h.x)) h.left  = insert(h.left,  x, y);
         else              h.right = insert(h.right, x, y);
         return h;
     }
@@ -59,8 +59,8 @@ public class RangeTree<Key extends Comparable<Key>>  {
         // find splitting node h where h.x is in the x-interval
         Node h = root;
         while (h != null && !intervalX.contains(h.x)) {
-            if      (less(intervalX.high, h.x)) h = h.left;
-            else if (less(h.x, intervalX.low))  h = h.right;
+            if      (lessEqual(intervalX.high, h.x)) h = h.left;
+            else if (lessEqual(h.x, intervalX.low))  h = h.right;
         }
         if (h == null) return;
 
@@ -74,7 +74,7 @@ public class RangeTree<Key extends Comparable<Key>>  {
     private void queryL(Node h, Interval2D<Key> rect) {
         if (h == null) return;
         if (rect.contains(h.x, h.y)) System.out.println("B: " + h.x + ", " + h.y);
-        if (!less(h.x, rect.intervalX.low)) {
+        if (!lessEqual(h.x, rect.intervalX.low)) {
             enumerate(h.right, rect);
             queryL(h.left, rect);
         }
@@ -87,7 +87,7 @@ public class RangeTree<Key extends Comparable<Key>>  {
     private void queryR(Node h, Interval2D<Key> rect) {
         if (h == null) return;
         if (rect.contains(h.x, h.y)) System.out.println("C: " + h.x + ", " + h.y);
-        if (!less(rect.intervalX.high, h.x)) {
+        if (!lessEqual(rect.intervalX.high, h.x)) {
             enumerate(h.left, rect);
             queryR(h.right, rect);
         }
@@ -113,8 +113,8 @@ public class RangeTree<Key extends Comparable<Key>>  {
     *  helper comparison functions
     *************************************************************************/
 
-    private boolean less(Key k1, Key k2) {
-        return k1.compareTo(k2) < 0;
+    private boolean lessEqual(Key k1, Key k2) {
+        return k1.compareTo(k2) <= 0;
     }
 
 }

@@ -1,6 +1,7 @@
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.Vector;
 
 public class LabelPlacer {
@@ -10,19 +11,39 @@ public class LabelPlacer {
      */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);        
-        
-        String model = sc.nextLine().substring(16);
-        int width = Integer.parseInt(sc.nextLine().substring(7));
-        int height = Integer.parseInt(sc.nextLine().substring(8));
-        int numberOfPoints = Integer.parseInt(sc.nextLine().substring(18));
-        Set<Vector> inputList = new HashSet<>();
-        
-        while(sc.hasNextLine()) {
-            String line = sc.nextLine();
+        String line;
+        line = sc.nextLine();
+        System.out.println(line);
+        String model = line.substring(16);
+        line = sc.nextLine();
+        System.out.println(line);
+        int width = Integer.parseInt(line.substring(7));
+        line = sc.nextLine();
+        System.out.println(line);
+        int height = Integer.parseInt(line.substring(8));
+        line = sc.nextLine();
+        System.out.println(line);
+        int numberOfPoints = Integer.parseInt(line.substring(18));
+        //Process points
+        List<PointData> inputList = new ArrayList<>();
+        for (int i = 0; i < numberOfPoints; i++) {
+            line = sc.nextLine();
             // Splitting the input by spaces, with the space regex
             String[] split = line.split("\\s+");
-            inputList.add(  new Vector( Integer.parseInt(split[0]), 
+            inputList.add( new PointData( Integer.parseInt(split[0]), 
                                         Integer.parseInt(split[1])));
         }
+        
+        /*
+         * Todo: find optimal labels.
+         */
+        
+        int numberOfLabels = 0;
+        System.out.println("number of labels: " + numberOfLabels);
+        
+        for (int i = 0; i < numberOfPoints; i++) {
+            System.out.println(inputList.get(i).x + " " + inputList.get(i).y + " NIL");
+        }
+
     }
 }

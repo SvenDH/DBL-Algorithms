@@ -46,7 +46,7 @@ public class LabelPlacer {
          * Todo: chose best algorithm for numberOfPoints and model
          */
         if (numberOfPoints <= NB) {
-            labelSolver = new BruteForceSolver(width, height);
+            labelSolver = new GreedySolver(width, height);
         } else {
             labelSolver = new NonSolver();
         /*

@@ -51,10 +51,10 @@ class GreedySolver implements LabelSolver {
             point.LabelSE = new Label(point, Direction.S, Direction.E, point.x, point.y - height);
             for (PointData otherPoint : points) {
                 if (!otherPoint.equals(point)) {//Is it a different point?
-                    if (    otherPoint.x <= point.x + 2*width && 
-                            otherPoint.x >= point.x - 2*width &&
-                            otherPoint.y <= point.y + 2*height &&
-                            otherPoint.y >= point.y - 2*height) {//Is the point inside the "danger-zone"?
+                    if (    otherPoint.x < point.x + 2*width && 
+                            otherPoint.x > point.x - 2*width &&
+                            otherPoint.y < point.y + 2*height &&
+                            otherPoint.y > point.y - 2*height) {//Is the point inside the "danger-zone"?
                         checkCollisions(point.LabelNW, otherPoint);
                         checkCollisions(point.LabelNE, otherPoint);
                         checkCollisions(point.LabelSW, otherPoint);
@@ -71,7 +71,6 @@ class GreedySolver implements LabelSolver {
         while (!queue.isEmpty()) {
             Label label = queue.poll();
             PointData point = label.point;
-            
             //Delete all other labels for point
             if (!point.LabelNE.equals(label) && point.NE){
                 point.NE = false;
@@ -185,10 +184,10 @@ class GreedySolver implements LabelSolver {
     }
     
     private void checkCollisions (Label label,PointData point) {
-        if (    point.x >= label.x - width &&
-                point.x <= label.x + 2*width &&
-                point.y >= label.y - height &&
-                point.y <= label.y + 2*height){//Is point in "danger-zone"?
+        if (    point.x > label.x - width &&
+                point.x < label.x + 2*width &&
+                point.y > label.y - height &&
+                point.y < label.y + 2*height){//Is point in "danger-zone"?
             
             if (point.y >= label.y + height) {  //Northern part
                 if (point.x >= label.x + width) {   //NE

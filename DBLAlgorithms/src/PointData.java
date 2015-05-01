@@ -3,10 +3,10 @@ public class PointData {
     int x;
     int y;
     
-    boolean NW = false;
-    boolean NE = false;
-    boolean SW = false;
-    boolean SE = false;
+    boolean NW = true;
+    boolean NE = true;
+    boolean SW = true;
+    boolean SE = true;
     
     Label LabelNW = null;
     Label LabelNE = null;

@@ -17,9 +17,13 @@ class Label {
     
     public int verticalDirection;
     public int horizontalDirection;
+    public int x;
+    public int y;
     
-    public Label(PointData point, int vertical, int horizontal) {
+    public Label(PointData point, int vertical, int horizontal, int x, int y) {
         this.point = point;
+        this.x = x;
+        this.y = y;
         verticalDirection = vertical;
         horizontalDirection = horizontal;
     }

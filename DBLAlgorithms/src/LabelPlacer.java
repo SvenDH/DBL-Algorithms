@@ -57,6 +57,12 @@ public class LabelPlacer {
         labelSolver.getLabeledPoints(inputList);
         
         int numberOfLabels = 0;
+        for (int i = 0; i < numberOfPoints; i++) {
+            PointData point = inputList.get(i);
+            if (point.NW || point.NE || point.SW || point.SE){
+                numberOfLabels++;
+            }
+        }
         System.out.println("number of labels: " + numberOfLabels);
         
         for (int i = 0; i < numberOfPoints; i++) {

@@ -18,6 +18,18 @@ public class PlaceLabelCommand extends Command<PointData> {
         this.height = height;
     }
     
+    public PointData getPoint() {
+        return this.receiver;
+    }
+    
+    public int getVertical() {
+        return this.verticalDirection;
+    }
+    
+    public int getHorizontal() {
+        return this.horizontalDirection;
+    }
+    
     @Override
     public void execute() {
         super.execute();

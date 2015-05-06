@@ -5,8 +5,6 @@ import java.util.PriorityQueue;
 
 class GreedySolver extends LabelSolver {
     
-    private int width;
-    private int height;
     PriorityQueue<Label> queue;
     
     GreedySolver (int w, int h) {

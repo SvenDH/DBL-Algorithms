@@ -15,6 +15,7 @@ import java.util.Scanner;
 import java.util.Random;
 import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.SwingUtilities;
 
@@ -39,14 +40,14 @@ class Draw extends JPanel {
         return new Dimension(660, 660);
     }
     
-    public Draw() { }
+    public Draw() {}
         /*
         int sum = 0;
-        for (int i = 0; i < boxList.size(); i++) {
-            for (int j = i + 1; j < boxList.size(); j++) {
+        for (int i = 0; i < LabelPlacer.numberOfPoints; i++) {
+            for (int j = i + 1; j < LabelPlacer.numberOfPoints; j++) {
 
                 // 
-                if (doOverlap(boxList.get(i), boxList.get(j))) {
+                if (doOverlap(LabelPlacer.inputList.get(i), LabelPlacer.inputList.get(j))) {
                     sum = sum + 1;
                 }
             }
@@ -70,15 +71,18 @@ class Draw extends JPanel {
         
         // Else, there is overlap
         else { return true; }
+    }*/
+    
+    public void drawCenteredCircle(Graphics2D g, int x, int y, int r) {
+        x = x-(r/2);
+        y = y-(r/2);
+        g.fillOval(x,y,r,r);
     }
-    */
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
-        int point1X = 0;
-        int point1Y = 0;
         
         // Scaling factor: (0.06 for optimal view of entire 10.000x10.000 matrix
         // Translation: offset from origin
@@ -94,43 +98,33 @@ class Draw extends JPanel {
         g2d.drawLine(0, 10000, 10000, 10000);
         g2d.drawLine(0, 0, 0, 10000);
         g2d.drawLine(0, 0, 10000, 0);
-        
+          
         // For each point in arrayList
-        for (Label label : LabelPlacer.labelList) {
-            // Color to red and transparancy to 0.6f.
-            g2d.setColor(Color.RED);
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-            
-            // Draw red rectangle for all possible labels
-            if (label.direction == Direction.SE) {
-                point1X = label.point.x;
-                point1Y = label.point.y - LabelPlacer.height;
-            } else
-            if (label.direction == Direction.SW){
-                point1X = label.point.x - LabelPlacer.width;
-                point1Y = label.point.y - LabelPlacer.height;
-            } else
-            if (label.direction == Direction.NE){
-                point1X = label.point.x;
-                point1Y = label.point.y;
-            } else
-            if (label.direction == Direction.NW){
-                point1X = label.point.x - LabelPlacer.width;
-                point1Y = label.point.y;
-            } else {
-                label = null;
-            }
-             
-            if (label != null) { 
-                g2d.draw(new Rectangle2D.Double(point1X, point1Y, LabelPlacer.width, LabelPlacer.height));
-            }
-            
+        for (PointData point : LabelPlacer.inputList) {
             // Color to black and transparancy to 1f.
             g2d.setColor(Color.BLACK);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             
             // Central point
-            g2d.fillRect(label.point.x, label.point.y, 51, 51);
+            drawCenteredCircle(g2d, point.x, point.y, 50);
+            
+            // Color to red and transparancy to 0.6f.
+            g2d.setColor(Color.RED);
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+            
+            // Draw red rectangle for all possible labels
+            if (point.SE) {
+                g2d.fillRect(point.x, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
+            } else
+            if (point.SW){
+                g2d.fillRect(point.x - LabelPlacer.width, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
+            } else
+            if (point.NE){
+                g2d.fillRect(point.x, point.y, LabelPlacer.width, LabelPlacer.height);
+            } else
+            if (point.NW){
+                g2d.fillRect(point.x - LabelPlacer.width, point.y, LabelPlacer.width, LabelPlacer.height);
+            }
         }
     }
 }

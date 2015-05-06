@@ -3,10 +3,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
+import javax.swing.SwingUtilities;
 
 public class LabelPlacer {   
     private final static int NB = 10000;
-    
+    public static List<PointData> inputList = new ArrayList<>();
+    public static int width;
+    public static int height;
+    public static int numberOfPoints;
+
     static void output() {
         
     }
@@ -14,8 +19,6 @@ public class LabelPlacer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        List<PointData> inputList = new ArrayList<>();
-        int numberOfPoints;
         
         Scanner sc = new Scanner(System.in);        
         String line;
@@ -24,10 +27,10 @@ public class LabelPlacer {
         String model = line.substring(16);
         line = sc.nextLine();
         System.out.println(line);
-        int width = Integer.parseInt(line.substring(7));
+        width = Integer.parseInt(line.substring(7));
         line = sc.nextLine();
         System.out.println(line);
-        int height = Integer.parseInt(line.substring(8));
+        height = Integer.parseInt(line.substring(8));
         line = sc.nextLine();
         System.out.println(line);
         numberOfPoints = Integer.parseInt(line.substring(18));
@@ -63,7 +66,6 @@ public class LabelPlacer {
                 numberOfLabels++;
             }
         }
-        System.out.println("number of labels: " + numberOfLabels);
         
         for (int i = 0; i < numberOfPoints; i++) {
             String dir = "NIL";
@@ -78,5 +80,7 @@ public class LabelPlacer {
             System.out.println
                 (inputList.get(i).x + " " + inputList.get(i).y + " " + dir);
         }
+        System.out.println("number of labels: " + numberOfLabels);
+        Draw.createAndShowGUI();     
     }
 }

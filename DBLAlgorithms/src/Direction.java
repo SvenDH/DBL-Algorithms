@@ -1,8 +1,8 @@
 class Direction {
-    static int N = 0;
-    static int S = 1;
-    static int W = 2;
-    static int E = 3;
+    static final int N = 0;
+    static final int S = 1;
+    static final int W = 2;
+    static final int E = 3;
     
     //Get opposite direction
     public int opposite (int dir) {

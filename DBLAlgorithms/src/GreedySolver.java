@@ -45,10 +45,10 @@ class GreedySolver implements LabelSolver {
         
         for (PointData point : points ) {
             
-            point.LabelNW = new Label(point, Direction.N, Direction.W, point.x - width, point.y);
-            point.LabelNE = new Label(point, Direction.N, Direction.E, point.x, point.y);
-            point.LabelSW = new Label(point, Direction.S, Direction.W, point.x - width, point.y - height);
-            point.LabelSE = new Label(point, Direction.S, Direction.E, point.x, point.y - height);
+            point.LabelNW = new Label(point, Direction.N, Direction.W, width, height);
+            point.LabelNE = new Label(point, Direction.N, Direction.E, width, height);
+            point.LabelSW = new Label(point, Direction.S, Direction.W, width, height);
+            point.LabelSE = new Label(point, Direction.S, Direction.E, width, height);
             for (PointData otherPoint : points) {
                 if (!otherPoint.equals(point)) {//Is it a different point?
                     if (    otherPoint.x < point.x + 2*width && 

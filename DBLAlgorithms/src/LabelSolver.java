@@ -2,7 +2,7 @@
 import java.util.List;
 
 
-public abstract class LabelSolver {
+abstract class LabelSolver {
     
     int width;
     int height;
@@ -11,11 +11,15 @@ public abstract class LabelSolver {
     public abstract void getLabeledPoints4pos (List<PointData> points);
     public abstract void getLabeledPoints1slider (List<PointData> points);
     
-    public void checkCollisions2pos (Label label,PointData point) {
+    public void checkCollisions2pos (Label label, PointData point) {
         if (    point.x > label.x - width &&
-                point.x < label.x + 2*width &&
+                point.x < label.x + 2 * width &&
                 point.y > label.y - height &&
+<<<<<<< HEAD
                 point.y < label.y + height){//Is point in "danger-zone"?
+=======
+                point.y < label.y + 2 * height) { //Is point in "danger-zone"?
+>>>>>>> b10f425c78346a2e3213ba51e4c0f88c972689c0
             
             if (point.y > label.y) {     //Middle part
                 if (point.x >= label.x + width) {   //E
@@ -37,11 +41,11 @@ public abstract class LabelSolver {
         }
     }
     
-    public void checkCollisions4pos (Label label,PointData point) {
+    public void checkCollisions4pos (Label label, PointData point) {
         if (    point.x > label.x - width &&
-                point.x < label.x + 2*width &&
+                point.x < label.x + 2 * width &&
                 point.y > label.y - height &&
-                point.y < label.y + 2*height){//Is point in "danger-zone"?
+                point.y < label.y + 2 * height) { //Is point in "danger-zone"?
             
             if (point.y >= label.y + height) {  //Northern part
                 if (point.x >= label.x + width) {   //NE

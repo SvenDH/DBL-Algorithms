@@ -15,11 +15,7 @@ abstract class LabelSolver {
         if (    point.x > label.x - width &&
                 point.x < label.x + 2 * width &&
                 point.y > label.y - height &&
-<<<<<<< HEAD
                 point.y < label.y + height){//Is point in "danger-zone"?
-=======
-                point.y < label.y + 2 * height) { //Is point in "danger-zone"?
->>>>>>> b10f425c78346a2e3213ba51e4c0f88c972689c0
             
             if (point.y > label.y) {     //Middle part
                 if (point.x >= label.x + width) {   //E

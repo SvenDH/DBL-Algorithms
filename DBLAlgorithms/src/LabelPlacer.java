@@ -24,7 +24,7 @@ public class LabelPlacer {
         String line;
         line = sc.nextLine();
         System.out.println(line);
-        String model = line.substring(16);
+        String model = line.substring(17);
         line = sc.nextLine();
         System.out.println(line);
         width = Integer.parseInt(line.substring(7));
@@ -56,8 +56,14 @@ public class LabelPlacer {
          * Todo: find optimal labels efficiently.
          */
         }
-        
-        labelSolver.getLabeledPoints(inputList);
+
+        if (model.equals("2pos")) {
+            labelSolver.getLabeledPoints2pos(inputList);
+        } else if (model.equals("4pos")) {
+            labelSolver.getLabeledPoints4pos(inputList);
+        } else {
+            labelSolver.getLabeledPoints1slider(inputList);
+        }
         
         int numberOfLabels = 0;
         for (int i = 0; i < numberOfPoints; i++) {

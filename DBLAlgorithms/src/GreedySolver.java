@@ -185,14 +185,15 @@ class GreedySolver extends LabelSolver {
     public void getLabeledPoints2pos(List<PointData> points) {
         
         for (PointData point : points ) {
-            
             point.LabelNW = new Label(point, Direction.N, Direction.W, width, height);
             point.LabelNE = new Label(point, Direction.N, Direction.E, width, height);
+            point.SW = false;
+            point.SE = false;
             for (PointData otherPoint : points) {
                 if (!otherPoint.equals(point)) {//Is it a different point?
                     if (    otherPoint.x < point.x + 2*width && 
                             otherPoint.x > point.x - 2*width &&
-                            otherPoint.y < point.y + 2*height &&
+                            otherPoint.y < point.y + height &&
                             otherPoint.y > point.y - 2*height) {//Is the point inside the "danger-zone"?
                         checkCollisions2pos(point.LabelNW, otherPoint);
                         checkCollisions2pos(point.LabelNE, otherPoint);
@@ -215,14 +216,6 @@ class GreedySolver extends LabelSolver {
                 point.NW = false;
                 queue.remove(point.LabelNW);
             }
-            if (!point.LabelSE.equals(label) && point.SE){
-                point.SE = false;
-                queue.remove(point.LabelSE);
-            }
-            if (!point.LabelSW.equals(label) && point.SW){
-                point.SW = false;
-                queue.remove(point.LabelSW);
-            }
             
             //Delete all labels of points that are in the new label
             for (PointData otherPoint : label.realCollisions) {
@@ -233,25 +226,6 @@ class GreedySolver extends LabelSolver {
                 if (otherPoint.NE) {
                     otherPoint.NE = false;
                     queue.remove(otherPoint.LabelNE);
-                }
-                if (otherPoint.SW) {
-                    otherPoint.SW = false;
-                    queue.remove(otherPoint.LabelSW);
-                }
-                if (otherPoint.SE) {
-                    otherPoint.SE = false;
-                    queue.remove(otherPoint.LabelSE);
-                }
-            }
-            //Delete all Southern labels of Northern points
-            for (PointData otherPoint : label.NCollisions) {
-                if (otherPoint.SW) {
-                    otherPoint.SW = false;
-                    queue.remove(otherPoint.LabelSW);
-                }
-                if (otherPoint.SE) {
-                    otherPoint.SE = false;
-                    queue.remove(otherPoint.LabelSE);
                 }
             }
             //Delete all Northern labels of Southern points
@@ -267,10 +241,6 @@ class GreedySolver extends LabelSolver {
             }
             //Delete all Eastern labels of Western points
             for (PointData otherPoint : label.WCollisions) {
-                if (otherPoint.SE) {
-                    otherPoint.SE = false;
-                    queue.remove(otherPoint.LabelSE);
-                }
                 if (otherPoint.NE) {
                     otherPoint.NE = false;
                     queue.remove(otherPoint.LabelNE);
@@ -278,27 +248,9 @@ class GreedySolver extends LabelSolver {
             }
             //Delete all Western labels of Eastern points
             for (PointData otherPoint : label.ECollisions) {
-                if (otherPoint.SW) {
-                    otherPoint.SW = false;
-                    queue.remove(otherPoint.LabelSW);
-                }
                 if (otherPoint.NW) {
                     otherPoint.NW = false;
                     queue.remove(otherPoint.LabelNW);
-                }
-            }
-            //Delete SE labels of NW points
-            for (PointData otherPoint : label.NWCollisions) {
-                if (otherPoint.SE) {
-                    otherPoint.SE = false;
-                    queue.remove(otherPoint.LabelSE);
-                }
-            }
-            //Delete SW labels of NE points
-            for (PointData otherPoint : label.NECollisions) {
-                if (otherPoint.SW) {
-                    otherPoint.SW = false;
-                    queue.remove(otherPoint.LabelSW);
                 }
             }
             //Delete NE labels of SW points

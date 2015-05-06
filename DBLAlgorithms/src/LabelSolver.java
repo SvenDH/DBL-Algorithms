@@ -15,17 +15,9 @@ public abstract class LabelSolver {
         if (    point.x > label.x - width &&
                 point.x < label.x + 2*width &&
                 point.y > label.y - height &&
-                point.y < label.y + 2*height){//Is point in "danger-zone"?
+                point.y < label.y + height){//Is point in "danger-zone"?
             
-            if (point.y >= label.y + height) {  //Northern part
-                if (point.x >= label.x + width) {   //NE
-                    label.NECollisions.add(point);
-                } else if (point.x > label.x) {     //N
-                    label.NCollisions.add(point);
-                } else {                            //NW
-                    label.NWCollisions.add(point);
-                }
-            } else if (point.y > label.y) {     //Middle part
+            if (point.y > label.y) {     //Middle part
                 if (point.x >= label.x + width) {   //E
                     label.ECollisions.add(point);
                 } else if (point.x > label.x) {     //Label rectangle

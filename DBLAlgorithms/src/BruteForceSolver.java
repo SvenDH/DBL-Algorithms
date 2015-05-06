@@ -4,13 +4,11 @@ import java.util.List;
 import java.util.Stack;
 
 
-public class BruteForceSolver implements LabelSolver {
+public class BruteForceSolver extends LabelSolver {
     
-    private final int width;
-    private final int height;
     private BruteForceSolver instance;
     
-    private BruteForceSolver (int width, int height) {
+    private BruteForceSolver(int width, int height) {
         this.width = width;
         this.height = height;
     }
@@ -31,7 +29,7 @@ public class BruteForceSolver implements LabelSolver {
      * @param points 
      */
     @Override
-    public void getLabeledPoints(List<PointData> points) {
+    public void getLabeledPoints4pos(List<PointData> points) {
         Stack<Command> commands = getMaxLabels(new Stack<Command>(), 0, 0, points);
         while (!commands.empty()) {
             Command command = commands.pop();
@@ -85,6 +83,16 @@ public class BruteForceSolver implements LabelSolver {
     private boolean getCollision(PointData point, int vertical, int horizontal) {
         
         return false;
+    }
+
+    @Override
+    public void getLabeledPoints2pos(List<PointData> points) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void getLabeledPoints1slider(List<PointData> points) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

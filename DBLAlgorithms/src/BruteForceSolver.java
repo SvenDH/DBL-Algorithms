@@ -6,18 +6,18 @@ import java.util.Stack;
 
 public class BruteForceSolver extends LabelSolver {
     
-    private BruteForceSolver instance;
+    private static BruteForceSolver instance;
     
     private BruteForceSolver(int width, int height) {
         this.width = width;
         this.height = height;
     }
     
-    public BruteForceSolver getInstance() {
-        return this.instance;
+    public static BruteForceSolver getInstance() {
+        return BruteForceSolver.instance;
     }
     
-    public BruteForceSolver getInstance(int width, int height) {
+    public static BruteForceSolver getInstance(int width, int height) {
         return new BruteForceSolver(width, height);
     }
 
@@ -32,8 +32,7 @@ public class BruteForceSolver extends LabelSolver {
     public void getLabeledPoints4pos(List<PointData> points) {
         Stack<PlaceLabelCommand> commands = getMaxLabels(new Stack<PlaceLabelCommand>(), 0, 0, points);
         while (!commands.empty()) {
-            PlaceLabelCommand command = commands.pop();
-            command.execute();
+            commands.pop().execute();
         }
     }
   
@@ -54,7 +53,7 @@ public class BruteForceSolver extends LabelSolver {
                 maxLabels--;
             }
         }
-        return null;
+        return commands;
     }
     
     private List<PossibleLabel> getPossibleLabels(List<PointData> points, Stack<PlaceLabelCommand> commands) {
@@ -81,8 +80,10 @@ public class BruteForceSolver extends LabelSolver {
     }
     
     private boolean getCollision(PointData point, int vertical, int horizontal, Stack<PlaceLabelCommand> commands) {
-        PlaceLabelCommand[] commandsArray = null;
-        commands.copyInto(commandsArray);
+        List<PlaceLabelCommand> commandsArray = new ArrayList<PlaceLabelCommand>();
+        while (!commands.empty()) {
+            commandsArray.add(commands.pop());
+        }
         boolean result = false;
         int x = point.x;
         int y = point.y;
@@ -94,36 +95,36 @@ public class BruteForceSolver extends LabelSolver {
             y -= height;
         }
         
-        for (int i = 0; i < commandsArray.length; i++) {
-            if (commandsArray[i].getVertical() == 0) {
-                if (commandsArray[i].getHorizontal() == 2) { //NW case
-                    if (x < commandsArray[i].getPoint().x 
-                            && commandsArray[i].getPoint().x < x + 2 * width
-                            && commandsArray[i].getPoint().y < y
-                            && y - 2 * height < commandsArray[i].getPoint().y) {
+        for (int i = 0; i < commandsArray.size(); i++) {
+            if (commandsArray.get(i).getVertical() == 0) {
+                if (commandsArray.get(i).getHorizontal() == 2) { //NW case
+                    if (x < commandsArray.get(i).getPoint().x 
+                            && commandsArray.get(i).getPoint().x < x + 2 * width
+                            && commandsArray.get(i).getPoint().y < y
+                            && y - 2 * height < commandsArray.get(i).getPoint().y) {
                         result = true;
                     }
-                } else if (commandsArray[i].getHorizontal() == 3) { //NE case
-                    if (x - width < commandsArray[i].getPoint().x
-                            && commandsArray[i].getPoint().x < x + width
-                            && commandsArray[i].getPoint().y < y
-                            && y - 2 * height < commandsArray[i].getPoint().y) {
+                } else if (commandsArray.get(i).getHorizontal() == 3) { //NE case
+                    if (x - width < commandsArray.get(i).getPoint().x
+                            && commandsArray.get(i).getPoint().x < x + width
+                            && commandsArray.get(i).getPoint().y < y
+                            && y - 2 * height < commandsArray.get(i).getPoint().y) {
                         result = true;
                     }
                 }
-            } else if (commandsArray[i].getVertical() == 1) {
-                if (commandsArray[i].getHorizontal() == 2) { //SW case
-                    if (x < commandsArray[i].getPoint().x 
-                            && commandsArray[i].getPoint().x < x + 2 * width
-                            && commandsArray[i].getPoint().y < y + height
-                            && y - height < commandsArray[i].getPoint().y) {
+            } else if (commandsArray.get(i).getVertical() == 1) {
+                if (commandsArray.get(i).getHorizontal() == 2) { //SW case
+                    if (x < commandsArray.get(i).getPoint().x 
+                            && commandsArray.get(i).getPoint().x < x + 2 * width
+                            && commandsArray.get(i).getPoint().y < y + height
+                            && y - height < commandsArray.get(i).getPoint().y) {
                         result = true;
                     }
-                } else if (commandsArray[i].getHorizontal() == 3) { //SE case
-                    if (x - width < commandsArray[i].getPoint().x 
-                            && commandsArray[i].getPoint().x < x + width
-                            && commandsArray[i].getPoint().y < y + height
-                            && y - height < commandsArray[i].getPoint().y) {
+                } else if (commandsArray.get(i).getHorizontal() == 3) { //SE case
+                    if (x - width < commandsArray.get(i).getPoint().x 
+                            && commandsArray.get(i).getPoint().x < x + width
+                            && commandsArray.get(i).getPoint().y < y + height
+                            && y - height < commandsArray.get(i).getPoint().y) {
                         result = true;
                     }
                 }

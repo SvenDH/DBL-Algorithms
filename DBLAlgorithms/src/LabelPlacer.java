@@ -57,7 +57,9 @@ public class LabelPlacer {
         /*
          * Todo: chose best algorithm for numberOfPoints and model
          */
-        if (numberOfPoints <= NB) {
+        if (numberOfPoints <= 40) {
+            labelSolver = BruteForceSolver.getInstance(width, height);
+        } else if (numberOfPoints <= NB) {
             labelSolver = new GreedySolver(width, height);
         } else {
             labelSolver = new NonSolver();
@@ -70,8 +72,10 @@ public class LabelPlacer {
             labelSolver.getLabeledPoints2pos(inputList);
         } else if (model.equals("4pos")) {
             labelSolver.getLabeledPoints4pos(inputList);
-        } else {
+        } else if (model.equals("1slider")) {
             labelSolver.getLabeledPoints1slider(inputList);
+        } else {
+            throw new IllegalArgumentException("Invalid model");
         }
         
         int numberOfLabels = 0;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
 import javax.swing.SwingUtilities;
+import java.util.Random;
 
 public class LabelPlacer {   
     private final static int NB = 10000;
@@ -19,7 +20,7 @@ public class LabelPlacer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+        String st;
         Scanner sc = new Scanner(System.in);        
         String line;
         line = sc.nextLine();
@@ -34,7 +35,15 @@ public class LabelPlacer {
         line = sc.nextLine();
         System.out.println(line);
         numberOfPoints = Integer.parseInt(line.substring(18));
-        
+        line = sc.nextLine();
+        if ("random".equals(line)) {
+            for (int i = 0; i < numberOfPoints; i++) {
+                Random randomGenerator = new Random();
+                int x = randomGenerator.nextInt(10000);
+                int y = randomGenerator.nextInt(10000);
+                inputList.add(new PointData(x,y));
+            }
+        } else {
         //Process points
         for (int i = 0; i < numberOfPoints; i++) {
             line = sc.nextLine();
@@ -43,7 +52,7 @@ public class LabelPlacer {
             inputList.add( new PointData( Integer.parseInt(split[0]), 
                                         Integer.parseInt(split[1])));
         }
-        
+        }
         LabelSolver labelSolver;
         /*
          * Todo: chose best algorithm for numberOfPoints and model

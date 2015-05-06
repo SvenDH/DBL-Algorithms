@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -59,16 +60,39 @@ public class BruteForceSolver implements LabelSolver {
     }
     
     private List<PossibleLabel> getPossibleLabels(List<PointData> points) {
+        List<PossibleLabel> possibleLabels = new ArrayList<PossibleLabel>();
+        for (PointData point : points) {
+            //no points within NW range
+            if (!getCollision(point, 0, 2)) {
+                possibleLabels.add(new PossibleLabel(point, 0, 2)); //NorthWest
+            }
+            //no points within NE range
+            if (!getCollision(point, 0, 3)) {
+                possibleLabels.add(new PossibleLabel(point, 0, 3)); //NorthEast
+            }
+            //no points within SW range
+            if (!getCollision(point, 1, 2)) {
+                possibleLabels.add(new PossibleLabel(point, 1, 2)); //SouthWest
+            }
+            //no points within SE range
+            if (!getCollision(point, 1, 3)) {
+                possibleLabels.add(new PossibleLabel(point, 1, 3)); //SouthEast
+            }
+        }
+        return possibleLabels;
+    }
+    
+    private boolean getCollision(PointData point, int vertical, int horizontal) {
         
-        return null;
+        return false;
     }
 
 }
 
 class PossibleLabel {
-    private PointData point;
-    private int verticalDirection;
-    private int horizontalDirection;
+    private final PointData point;
+    private final int verticalDirection;
+    private final int horizontalDirection;
     
     public PossibleLabel(PointData point, int verticalDirection, int horizontalDirection) {
         this.point = point;

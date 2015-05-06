@@ -31,7 +31,7 @@ public class PlaceLabelCommand extends Command<PointData> {
                 receiver.NE = true;
             }
             else {
-                System.out.println("Something went wrong with the direction");
+                throw new IllegalArgumentException("Something went wrong with the direction");
             }
         }
         else if (verticalDirection == S) {
@@ -44,7 +44,7 @@ public class PlaceLabelCommand extends Command<PointData> {
                 receiver.SE = true;
             }
             else {
-                System.out.println("Something went wrong with the direction");
+                throw new IllegalArgumentException("Something went wrong with the direction");
             }
         }
     }

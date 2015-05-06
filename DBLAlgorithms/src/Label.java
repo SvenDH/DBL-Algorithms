@@ -41,7 +41,7 @@ class Label {
                 this.y = point.y;
             }
             else {
-                System.out.println("Something went wrong with the direction");
+                throw new IllegalArgumentException("Something went wrong with the direction");
             }
         }
         else if (verticalDirection == S) {
@@ -54,7 +54,7 @@ class Label {
                 this.y = point.y - height;
             }
             else {
-                System.out.println("Something went wrong with the direction");
+                throw new IllegalArgumentException("Something went wrong with the direction");
             }
         }
         this.point = point;

@@ -33,7 +33,7 @@ public class BruteForceSolver extends LabelSolver {
     @Override
     public List<PointData> getLabeledPoints4pos(List<Point> points) {
         for (Point point : points)
-            pointData.add(new PointData2Pos(point.x, point.y));
+            pointData.add(new PointData4Pos(point.x, point.y));
         Stack<PlaceLabelCommand> commands = getMaxLabels(new Stack<PlaceLabelCommand>(), 0, 0, pointData);
         while (!commands.empty()) {
             commands.pop().execute();

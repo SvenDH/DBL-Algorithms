@@ -42,7 +42,7 @@ public class Greedy2Pos implements ModelSpecificSolver {
                     if (    otherPoint.x < point.x + 2*width && 
                             otherPoint.x > point.x - 2*width &&
                             otherPoint.y < point.y + height &&
-                            otherPoint.y > point.y - 2*height) {//Is the point inside the "danger-zone"?
+                            otherPoint.y > point.y - height) {//Is the point inside the "danger-zone"?
                         checkCollisions(point.LabelNW, otherPoint);
                         checkCollisions(point.LabelNE, otherPoint);
                     }

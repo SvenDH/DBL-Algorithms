@@ -7,11 +7,13 @@ import javax.swing.SwingUtilities;
 import java.util.Random;
 
 public class LabelPlacer {   
-    private final static int NB = 10000;
-    public static List<PointData> inputList = new ArrayList<>();
-    public static int width;
-    public static int height;
-    public static int numberOfPoints;
+    final static int NB = 50;
+    static List<Point> inputList = new ArrayList<>();
+    static List<? extends PointData> outputList;
+    static int width;
+    static int height;
+    static String model;
+    static int numberOfPoints;
 
     static void output() {
         
@@ -25,7 +27,7 @@ public class LabelPlacer {
         String line;
         line = sc.nextLine();
         System.out.println(line);
-        String model = line.substring(17);
+        model = line.substring(17);
         line = sc.nextLine();
         System.out.println(line);
         width = Integer.parseInt(line.substring(7));
@@ -41,7 +43,7 @@ public class LabelPlacer {
                 Random randomGenerator = new Random();
                 int x = randomGenerator.nextInt(10000);
                 int y = randomGenerator.nextInt(10000);
-                inputList.add(new PointData(x,y));
+                inputList.add(new Point(x,y));
             }
         } else {
         //Process points
@@ -49,7 +51,7 @@ public class LabelPlacer {
             line = sc.nextLine();
             // Splitting the input by spaces, with the space regex
             String[] split = line.split("\\s+");
-            inputList.add( new PointData( Integer.parseInt(split[0]), 
+            inputList.add( new Point( Integer.parseInt(split[0]), 
                                         Integer.parseInt(split[1])));
         }
         }
@@ -57,47 +59,33 @@ public class LabelPlacer {
         /*
          * Todo: chose best algorithm for numberOfPoints and model
          */
-        if (numberOfPoints <= 40) {
+        if (numberOfPoints <= NB) {
             labelSolver = BruteForceSolver.getInstance(width, height);
-        } else if (numberOfPoints <= NB) {
-            labelSolver = new GreedySolver(width, height);
         } else {
-            labelSolver = new NonSolver();
-        /*
-         * Todo: find optimal labels efficiently.
-         */
+            labelSolver = new GreedySolver(width, height);
         }
 
         if (model.equals("2pos")) {
-            labelSolver.getLabeledPoints2pos(inputList);
+            outputList = labelSolver.getLabeledPoints2pos(inputList);
         } else if (model.equals("4pos")) {
-            labelSolver.getLabeledPoints4pos(inputList);
+            outputList = labelSolver.getLabeledPoints4pos(inputList);
         } else if (model.equals("1slider")) {
-            labelSolver.getLabeledPoints1slider(inputList);
+            outputList = labelSolver.getLabeledPoints1slider(inputList);
         } else {
             throw new IllegalArgumentException("Invalid model");
         }
         
         int numberOfLabels = 0;
         for (int i = 0; i < numberOfPoints; i++) {
-            PointData point = inputList.get(i);
-            if (point.NW || point.NE || point.SW || point.SE){
+            PointData point = outputList.get(i);
+            if (!point.getLabelInfo().equals("NILL")){
                 numberOfLabels++;
             }
         }
         
         for (int i = 0; i < numberOfPoints; i++) {
-            String dir = "NIL";
-            if (inputList.get(i).NW) 
-                dir = "NW";
-            else if (inputList.get(i).NE)
-                dir = "NE";
-            else if (inputList.get(i).SW)
-                dir = "SW";
-            else if (inputList.get(i).SE)
-                dir = "SE";
             System.out.println
-                (inputList.get(i).x + " " + inputList.get(i).y + " " + dir);
+                (outputList.get(i).x + " " + outputList.get(i).y + " " + outputList.get(i).getLabelInfo());
         }
         System.out.println("number of labels: " + numberOfLabels);
         Draw.createAndShowGUI();     

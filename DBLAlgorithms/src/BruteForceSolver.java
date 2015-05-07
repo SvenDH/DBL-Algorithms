@@ -7,10 +7,12 @@ import java.util.Stack;
 public class BruteForceSolver extends LabelSolver {
     
     private static BruteForceSolver instance;
+    List<PointData> pointData;
     
     private BruteForceSolver(int width, int height) {
         this.width = width;
         this.height = height;
+        pointData = new ArrayList<>();
     }
     
     public static BruteForceSolver getInstance() {
@@ -29,11 +31,14 @@ public class BruteForceSolver extends LabelSolver {
      * @param points 
      */
     @Override
-    public void getLabeledPoints4pos(List<PointData> points) {
-        Stack<PlaceLabelCommand> commands = getMaxLabels(new Stack<PlaceLabelCommand>(), 0, 0, points);
+    public List<PointData> getLabeledPoints4pos(List<Point> points) {
+        for (Point point : points)
+            pointData.add(new PointData2Pos(point.x, point.y));
+        Stack<PlaceLabelCommand> commands = getMaxLabels(new Stack<PlaceLabelCommand>(), 0, 0, pointData);
         while (!commands.empty()) {
             commands.pop().execute();
         }
+        return pointData;
     }
   
     private Stack<PlaceLabelCommand> getMaxLabels(Stack<PlaceLabelCommand> commands, int labels, int maxLabels, List<PointData> points) {
@@ -42,15 +47,13 @@ public class BruteForceSolver extends LabelSolver {
         }
         List<PossibleLabel> possibleLabels = getPossibleLabels(points, commands);
         for (PossibleLabel possibleLabel : possibleLabels) {
-            maxLabels++;
+            labels++;
             if (labels > maxLabels) {
                 commands.add(new PlaceLabelCommand(
                         possibleLabel.getPoint(), 
                         possibleLabel.getVertical(), 
                         possibleLabel.getHorizontal(), width, height));
                 return getMaxLabels(commands, labels, labels, points);
-            } else {
-                maxLabels--;
             }
         }
         return commands;
@@ -134,12 +137,12 @@ public class BruteForceSolver extends LabelSolver {
     }
 
     @Override
-    public void getLabeledPoints2pos(List<PointData> points) {
+    public List<PointData> getLabeledPoints2pos(List<Point> points) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void getLabeledPoints1slider(List<PointData> points) {
+    public List<PointData> getLabeledPoints1slider(List<Point> points) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

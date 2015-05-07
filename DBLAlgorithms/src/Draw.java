@@ -100,7 +100,7 @@ class Draw extends JPanel {
         g2d.drawLine(0, 0, 10000, 0);
           
         // For each point in arrayList
-        for (PointData point : LabelPlacer.inputList) {
+        for (PointData point : LabelPlacer.outputList) {
             // Color to black and transparancy to 1f.
             g2d.setColor(Color.BLACK);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
@@ -113,17 +113,22 @@ class Draw extends JPanel {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
             
             // Draw red rectangle for all possible labels
-            if (point.SE) {
+            if (point.getLabelInfo().equals("SE")) {
                 g2d.fillRect(point.x, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.SW){
+            if (point.getLabelInfo().equals("SW")){
                 g2d.fillRect(point.x - LabelPlacer.width, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.NE){
+            if (point.getLabelInfo().equals("NE")){
                 g2d.fillRect(point.x, point.y, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.NW){
+            if (point.getLabelInfo().equals("NW")){
                 g2d.fillRect(point.x - LabelPlacer.width, point.y, LabelPlacer.width, LabelPlacer.height);
+            } else
+            if (point.getLabelInfo().equals("NILL")){
+                //Do nothing
+            } else {
+                //Draw Label for slider model
             }
         }
     }

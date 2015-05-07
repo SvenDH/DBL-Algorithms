@@ -16,19 +16,13 @@ public class Greedy2Pos implements ModelSpecificSolver {
         queue = new PriorityQueue<>(new Comparator<Label2Pos>(){//Heuristics
             @Override
             public int compare(Label2Pos o1, Label2Pos o2) {
-                int o1Size = 4*o1.realCollisions.size()
-                        + o1.SCollisions.size()
+                int o1Size = 2*o1.realCollisions.size()
                         + o1.WCollisions.size()
-                        + o1.ECollisions.size()
-                        + 2*o1.SWCollisions.size()
-                        + 2*o1.SECollisions.size();
+                        + o1.ECollisions.size();
                 
-                int o2Size = 4*o2.realCollisions.size()
-                        + o2.SCollisions.size()
+                int o2Size = 2*o2.realCollisions.size()
                         + o2.WCollisions.size()
-                        + o2.ECollisions.size()
-                        + 2*o2.SWCollisions.size()
-                        + 2*o2.SECollisions.size();
+                        + o2.ECollisions.size();
                         
                 return o1Size - o2Size;
             }
@@ -82,17 +76,6 @@ public class Greedy2Pos implements ModelSpecificSolver {
                     queue.remove(otherPoint.LabelNE);
                 }
             }
-            //Delete all Northern labels of Southern points
-            for (PointData2Pos otherPoint : label.SCollisions) {
-                if (otherPoint.NW) {
-                    otherPoint.NW = false;
-                    queue.remove(otherPoint.LabelNW);
-                }
-                if (otherPoint.NE) {
-                    otherPoint.NE = false;
-                    queue.remove(otherPoint.LabelNE);
-                }
-            }
             //Delete all Eastern labels of Western points
             for (PointData2Pos otherPoint : label.WCollisions) {
                 if (otherPoint.NE) {
@@ -107,20 +90,6 @@ public class Greedy2Pos implements ModelSpecificSolver {
                     queue.remove(otherPoint.LabelNW);
                 }
             }
-            //Delete NE labels of SW points
-            for (PointData2Pos otherPoint : label.SWCollisions) {
-                if (otherPoint.NE) {
-                    otherPoint.NE = false;
-                    queue.remove(otherPoint.LabelNE);
-                }
-            }
-            //Delete NW labels of SE points
-            for (PointData2Pos otherPoint : label.SECollisions) {
-                if (otherPoint.NW) {
-                    otherPoint.NW = false;
-                    queue.remove(otherPoint.LabelNW);
-                }
-            }
         }
     }
     
@@ -130,22 +99,12 @@ public class Greedy2Pos implements ModelSpecificSolver {
                 point.y > label.y - height &&
                 point.y < label.y + height){//Is point in "danger-zone"?
             
-            if (point.y > label.y) {     //Middle part
-                if (point.x >= label.x + width) {   //E
-                    label.ECollisions.add(point);
-                } else if (point.x > label.x) {     //Label rectangle
-                    label.realCollisions.add(point);
-                } else {                            //W
-                    label.WCollisions.add(point);
-                }
-            } else {                            //Southern part
-                if (point.x >= label.x + width) {   //SE
-                    label.SECollisions.add(point);
-                } else if (point.x > label.x) {     //S
-                    label.SCollisions.add(point);
-                } else {                            //SW
-                    label.SWCollisions.add(point);
-                }
+            if (point.x >= label.x + width) {   //E
+                label.ECollisions.add(point);
+            } else if (point.x > label.x) {     //Label rectangle
+                label.realCollisions.add(point);
+            } else {                            //W
+                label.WCollisions.add(point);
             }
         }
     }

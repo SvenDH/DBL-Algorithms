@@ -6,11 +6,8 @@ public class Label2Pos extends Label {
    
     public PointData2Pos point;
     public List<PointData2Pos> realCollisions = new ArrayList<>();
-    public List<PointData2Pos> SCollisions = new ArrayList<>();
     public List<PointData2Pos> WCollisions = new ArrayList<>();
     public List<PointData2Pos> ECollisions = new ArrayList<>();
-    public List<PointData2Pos> SWCollisions = new ArrayList<>();
-    public List<PointData2Pos> SECollisions = new ArrayList<>();
     
     public int horizontalDirection;
     
@@ -20,7 +17,7 @@ public class Label2Pos extends Label {
         if (horizontalDirection == Direction.W) {
             this.x = point.x - width;
             this.y = point.y;
-        } else if (horizontalDirection == Direction.E) {
+        } else if (horizontalDirection == Direction.E) {//Remove this shit for less overhead
             this.x = point.x;
             this.y = point.y;
         } else {

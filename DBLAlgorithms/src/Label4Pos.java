@@ -31,7 +31,7 @@ public class Label4Pos extends Label {
                 this.x = point.x;
                 this.y = point.y;
             }
-            else {
+            else { //Remove this shit for less overhead
                 throw new IllegalArgumentException("Something went wrong with the direction");
             }
         }
@@ -44,7 +44,7 @@ public class Label4Pos extends Label {
                 this.x = point.x;
                 this.y = point.y - height;
             }
-            else {
+            else { //Remove this shit for less overhead
                 throw new IllegalArgumentException("Something went wrong with the direction");
             }
         }

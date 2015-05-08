@@ -22,7 +22,7 @@ public class LabelPlacer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String st;
+       
         Scanner sc = new Scanner(System.in);        
         String line;
         line = sc.nextLine();
@@ -31,30 +31,77 @@ public class LabelPlacer {
         line = sc.nextLine();
         System.out.println(line);
         width = Integer.parseInt(line.substring(7));
+        Globals.width = width;
         line = sc.nextLine();
         System.out.println(line);
         height = Integer.parseInt(line.substring(8));
+        Globals.height = height;
         line = sc.nextLine();
         System.out.println(line);
         numberOfPoints = Integer.parseInt(line.substring(18));
+        Globals.numberOfPoints = numberOfPoints;
         line = sc.nextLine();
         if ("random".equals(line)) {
-            for (int i = 0; i < numberOfPoints; i++) {
-                Random randomGenerator = new Random();
-                int x = randomGenerator.nextInt(10000);
-                int y = randomGenerator.nextInt(10000);
+            Random randomGenerator = new Random();
+            int x = randomGenerator.nextInt(10000);
+            int y = randomGenerator.nextInt(10000);
+            inputList.add(new Point(x,y));
+            Globals.maxX = x;
+            Globals.minX = x;
+            Globals.maxY = y;
+            Globals.minY = y;
+            for (int i = 0; i < numberOfPoints - 1; i++) {
+                x = randomGenerator.nextInt(10000);
+                y = randomGenerator.nextInt(10000);
                 inputList.add(new Point(x,y));
+                if (x > Globals.maxX) {
+                    Globals.maxX = x;
+                } else
+                if (x < Globals.minX) {
+                    Globals.minX = x;
+                }
+                
+                if (y > Globals.maxY) {
+                    Globals.maxY = y;
+                } else
+                if (y < Globals.minY) {
+                    Globals.minY = y;
+                }
             }
         } else {
-        //Process points
-        for (int i = 0; i < numberOfPoints; i++) {
             line = sc.nextLine();
-            // Splitting the input by spaces, with the space regex
             String[] split = line.split("\\s+");
-            inputList.add( new Point( Integer.parseInt(split[0]), 
-                                        Integer.parseInt(split[1])));
+            int x = Integer.parseInt(split[0]);
+            int y = Integer.parseInt(split[1]);
+            inputList.add(new Point(x,y));
+            Globals.maxX = x;
+            Globals.minX = x;
+            Globals.maxY = y;
+            Globals.minY = y;
+            //Process points
+            for (int i = 0; i < numberOfPoints - 1; i++) {
+                line = sc.nextLine();
+                // Splitting the input by spaces, with the space regex
+                split = line.split("\\s+");
+                x = Integer.parseInt(split[0]);
+                y = Integer.parseInt(split[1]);
+                inputList.add(new Point(x,y));
+                if (x > Globals.maxX) {
+                    Globals.maxX = x;
+                } else
+                if (x < Globals.minX) {
+                    Globals.minX = x;
+                }
+                
+                if (y > Globals.maxY) {
+                    Globals.maxY = y;
+                } else
+                if (y < Globals.minY) {
+                    Globals.minY = y;
+                }
+            }
         }
-        }
+        
         LabelSolver labelSolver;
         /*
          * Todo: chose best algorithm for numberOfPoints and model

@@ -17,7 +17,11 @@ class GreedySolver extends LabelSolver {
 
     @Override
     public List<PointData> getLabeledPoints1slider(List<Point> points) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (Point point : points)
+            pointData.add(new PointData1Slider(point.x, point.y));
+        solver = new Greedy1Slider(width, height);
+        solver.getLabeledPoints(pointData);
+        return pointData;
     }
 
     @Override

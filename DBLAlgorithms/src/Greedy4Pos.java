@@ -16,33 +16,29 @@ public class Greedy4Pos implements ModelSpecificSolver {
         queue = new PriorityQueue<>(new Comparator<Label4Pos>(){//Heuristics
             @Override
             public int compare(Label4Pos o1, Label4Pos o2) {
-                float o1value = getHeuristics(o1);
-                float o2value = getHeuristics(o2);
-                if (o1value > o2value)
-                    return 1;
-                else if (o1value < o2value)
-                    return -1;
-                else
-                    return 0;
-                //return getHeuristics(o1) - getHeuristics(o2);
+                int o1Size = (4*o1.realCollisions.size()
+                        + o1.NCollisions.size()
+                        + o1.SCollisions.size()
+                        + o1.WCollisions.size()
+                        + o1.ECollisions.size()
+                        + 2*o1.NWCollisions.size()
+                        + 2*o1.NECollisions.size()
+                        + 2*o1.SWCollisions.size()
+                        + 2*o1.SECollisions.size());
+                
+                int o2Size = (4*o2.realCollisions.size()
+                        + o2.NCollisions.size()
+                        + o2.SCollisions.size()
+                        + o2.WCollisions.size()
+                        + o2.ECollisions.size()
+                        + 2*o2.NWCollisions.size()
+                        + 2*o2.NECollisions.size()
+                        + 2*o2.SWCollisions.size()
+                        + 2*o2.SECollisions.size());
+                        
+                return o1Size - o2Size;
             }
         });
-    }
-    
-    float getHeuristics(Label4Pos label) {
-        float result = 
-                (4*label.realCollisions.size()
-                + label.NCollisions.size()
-                + label.SCollisions.size()
-                + label.WCollisions.size()
-                + label.ECollisions.size()
-                + 2*label.NWCollisions.size()
-                + 2*label.NECollisions.size()
-                + 2*label.SWCollisions.size()
-                + 2*label.SECollisions.size()) //Amount of labels excluded
-                / (4*Globals.numberOfPoints-3);
-
-        return result;
     }
     
     @Override  

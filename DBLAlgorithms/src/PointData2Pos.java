@@ -17,7 +17,7 @@ public class PointData2Pos extends PointData {
         } else if (NE) {
             return "NE";
         } else {
-            return "NILL";
+            return "NIL";
         }
     }
     

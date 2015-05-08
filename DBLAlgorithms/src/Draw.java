@@ -37,7 +37,7 @@ class Draw extends JPanel {
     
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(660, 660);
+        return new Dimension(990, 990);
     }
     
     public Draw() {}
@@ -90,7 +90,7 @@ class Draw extends JPanel {
         t.scale(1, -1);
         g2d.setTransform(t);
         
-        g2d.scale(0.06, 0.06);
+        g2d.scale(0.09, 0.09);
         g2d.translate(500, 500);
         
         // Draw the matrix
@@ -109,24 +109,33 @@ class Draw extends JPanel {
             drawCenteredCircle(g2d, point.x, point.y, 50);
             
             // Color to red and transparancy to 0.6f.
-            g2d.setColor(Color.RED);
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+                g2d.setColor(Color.RED);
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
             
             // Draw red rectangle for all possible labels
             if (point.getLabelInfo().equals("SE")) {
+                g2d.setColor(Color.RED);
                 g2d.fillRect(point.x, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
             } else
             if (point.getLabelInfo().equals("SW")){
+                g2d.setColor(Color.BLUE);
                 g2d.fillRect(point.x - LabelPlacer.width, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
             } else
             if (point.getLabelInfo().equals("NE")){
+                g2d.setColor(Color.YELLOW);
                 g2d.fillRect(point.x, point.y, LabelPlacer.width, LabelPlacer.height);
             } else
             if (point.getLabelInfo().equals("NW")){
+                g2d.setColor(Color.GREEN);
                 g2d.fillRect(point.x - LabelPlacer.width, point.y, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.getLabelInfo().equals("NILL")){
+            if (point.getLabelInfo().equals("NIL")){
                 //Do nothing
+                // Color to red and transparancy to 0.6f.
+                g2d.setColor(Color.RED);
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+                // Central point
+                drawCenteredCircle(g2d, point.x, point.y, 50);
             } else {
                 //Draw Label for slider model
             }

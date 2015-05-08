@@ -125,7 +125,7 @@ public class LabelPlacer {
         int numberOfLabels = 0;
         for (int i = 0; i < numberOfPoints; i++) {
             PointData point = outputList.get(i);
-            if (!point.getLabelInfo().equals("NILL")){
+            if (!point.getLabelInfo().equals("NIL")){
                 numberOfLabels++;
             }
         }

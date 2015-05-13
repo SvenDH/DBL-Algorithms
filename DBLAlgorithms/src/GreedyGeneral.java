@@ -225,8 +225,8 @@ public class GreedyGeneral extends LabelSolver {
                     queue.add(otherLabel);
                 }
             }
-            System.out.println("Labels left: " + pointData.labels.size());
-            System.out.println("Placing label: " + pointData.getLabelInfo());
+            //System.out.println("Labels left: " + pointData.labels.size());
+            //System.out.println("Placing label: " + pointData.getLabelInfo());
         }
     }
 }

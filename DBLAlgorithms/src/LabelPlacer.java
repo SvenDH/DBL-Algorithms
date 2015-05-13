@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 import java.util.Random;
 
 public class LabelPlacer {   
-    final static int NB = 50;
+    final static int NB = 0;
     static List<Point> inputList = new ArrayList<>();
     static List<? extends PointData> outputList;
     static int width;
@@ -106,11 +106,11 @@ public class LabelPlacer {
         /*
          * Todo: chose best algorithm for numberOfPoints and model
          */
-        if (numberOfPoints <= NB) {
-            labelSolver = BruteForceSolver.getInstance(width, height);
-        } else {
+        //if (numberOfPoints <= NB) {
+        //    labelSolver = BruteForceSolver.getInstance(width, height);
+        //} else {
             labelSolver = new GreedyGeneral(width, height);
-        }
+        //}
 
         if (model.equals("2pos")) {
             outputList = labelSolver.getLabeledPoints2pos(inputList);
@@ -135,6 +135,6 @@ public class LabelPlacer {
                 (outputList.get(i).x + " " + outputList.get(i).y + " " + outputList.get(i).getLabelInfo());
         }
         System.out.println("number of labels: " + numberOfLabels);
-        Draw.createAndShowGUI();     
+        //Draw.createAndShowGUI();     
     }
 }

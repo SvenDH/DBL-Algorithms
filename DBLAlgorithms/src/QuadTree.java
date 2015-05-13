@@ -86,7 +86,7 @@ public class QuadTree {
         if (xmax >= h.x &&  ymin < h.y) query2D(h.SE, rect, result);
         if (xmax >= h.x && ymax >= h.y) query2D(h.NE, rect, result);
     }
-
+    /*
     public static void main(String[] args) {
         QuadTree st = new QuadTree(10,10);
 
@@ -110,4 +110,5 @@ public class QuadTree {
             }
         }
     }
+    */
 }

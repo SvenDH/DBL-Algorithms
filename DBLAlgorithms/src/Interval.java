@@ -20,6 +20,11 @@ public class Interval<Key extends Comparable<Key>> {
     public boolean contains(Key x) {
         return !less(x, low) && !less(high, x);
     }
+    
+    // is x between low and high
+    public boolean strictlyContains(Key x) {
+        return less(low, x) && less(x, high);
+    }
 
     // does this interval intersect that interval?
     public boolean intersects(Interval<Key> that) {

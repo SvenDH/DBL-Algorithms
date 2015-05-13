@@ -109,7 +109,7 @@ public class LabelPlacer {
         if (numberOfPoints <= NB) {
             labelSolver = BruteForceSolver.getInstance(width, height);
         } else {
-            labelSolver = new GreedySolver(width, height);
+            labelSolver = new GreedyGeneral(width, height);
         }
 
         if (model.equals("2pos")) {

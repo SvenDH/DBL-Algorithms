@@ -26,6 +26,11 @@ public class Interval2D<Key extends Comparable<Key>> {
     public boolean contains(Key x, Key y) {
         return intervalX.contains(x) && intervalY.contains(y);
     }
+    
+    // does this 2D interval contain (x, y)?
+    public boolean strictlyContains(Key x, Key y) {
+        return intervalX.strictlyContains(x) && intervalY.strictlyContains(y);
+    }
 
     // return string representation
     public String toString() {

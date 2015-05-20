@@ -15,8 +15,60 @@ public class LabelPlacer {
     static String model;
     static int numberOfPoints;
 
-    static void output() {
-        
+    static boolean doOverlap(int i, int j)
+    {
+    // Point l1, Point r1, Point l2, Point r2
+    Point l1 = new Point(0,0);
+    Point l2 = new Point(0,0);
+    Point r1 = new Point(0,0); 
+    Point r2 = new Point(0,0);
+
+    // NW
+    if (outputList.get(i).getLabelInfo().equals("NW")) {
+        r1 = new Point(outputList.get(i).x, outputList.get(i).y);
+        l1 = new Point(outputList.get(i).x-width, outputList.get(i).y+height);
+    }    
+    if (outputList.get(j).getLabelInfo().equals("NW")) {
+        r2 = new Point(outputList.get(j).x, outputList.get(j).y);
+        l2 = new Point(outputList.get(j).x-width, outputList.get(j).y+height);
+    }    
+    // NE
+    if (outputList.get(i).getLabelInfo().equals("NE")) {
+        r1 = new Point(outputList.get(i).x+width, outputList.get(i).y);
+        l1 = new Point(outputList.get(i).x, outputList.get(i).y+height);        
+    }   
+    if (outputList.get(j).getLabelInfo().equals("NE")) {
+        r2 = new Point(outputList.get(j).x+width, outputList.get(j).y);
+        l2 = new Point(outputList.get(j).x, outputList.get(j).y+height);
+    }   
+    // SE
+    if (outputList.get(i).getLabelInfo().equals("SE")) {
+        l1 = new Point(outputList.get(i).x, outputList.get(i).y);
+        r1 = new Point(outputList.get(i).x+width, outputList.get(i).y-height);
+    }
+    if (outputList.get(j).getLabelInfo().equals("SE")) {
+        l2 = new Point(outputList.get(j).x, outputList.get(j).y);
+        r2 = new Point(outputList.get(j).x+width, outputList.get(j).y-height);
+    }
+    // SW
+    if (outputList.get(i).getLabelInfo().equals("SW")) {
+        r1 = new Point(outputList.get(i).x, outputList.get(i).y - height);
+        l1 = new Point(outputList.get(i).x - width, outputList.get(i).y);
+    }
+    if (outputList.get(j).getLabelInfo().equals("SW")) {
+        r2 = new Point(outputList.get(j).x, outputList.get(j).y - height);
+        l2 = new Point(outputList.get(j).x - width, outputList.get(j).y);
+    }
+    
+    // If one rectangle is on left side of other
+    if (l1.x > r2.x || l2.x > r1.x)
+        return false;
+ 
+    // If one rectangle is above other
+    if (l1.y < r2.y || l2.y < r1.y)
+        return false;
+ 
+    return true;
     }
     /**
      * @param args the command line arguments
@@ -136,7 +188,18 @@ public class LabelPlacer {
             System.out.println
                 (outputList.get(i).x + " " + outputList.get(i).y + " " + outputList.get(i).getLabelInfo());
         }
+
+        int sum = 0;
         
+        for (int i = 0; i < numberOfPoints - 1; i++) {
+            for (int j = i + 1; j < numberOfPoints; j++) {
+                if ((outputList.get(i).getLabelInfo() != "NIL") && 
+                    (outputList.get(j).getLabelInfo() != "NIL") &&
+                    (doOverlap(i,j))) 
+                        {sum = sum + 1;}
+            }
+        }
+        System.out.println("There are " + sum + " overlaps");
         Draw.createAndShowGUI();     
     }
 }

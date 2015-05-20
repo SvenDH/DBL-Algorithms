@@ -1,5 +1,5 @@
 
-public class PlaceLabelCommand extends Command<PointData> {
+public class PlaceLabelCommand<T extends Label> extends Command<PointData> {
     
     private final int N = 0;
     private final int S = 1;
@@ -18,7 +18,7 @@ public class PlaceLabelCommand extends Command<PointData> {
         this.height = height;
     }
     
-    public PointData getPoint() {
+    PointData getPoint() {
         return this.receiver;
     }
     
@@ -35,7 +35,7 @@ public class PlaceLabelCommand extends Command<PointData> {
         super.execute();
         if (verticalDirection == N) {
             if (horizontalDirection == W) {
-                receiver.LabelNW = new Label(receiver, horizontalDirection, verticalDirection, width, height);
+                receiver.LabelNW = new T(receiver, horizontalDirection, verticalDirection, width, height);
                 receiver.NW = true;
             }
             else if (horizontalDirection == E) {

@@ -1,16 +1,4 @@
-/**
- * Base class to represent an executable and undoable command,
- * applied to an object of type {@code R}.
- * Concrete command classes extend this base class,
- * by adding parameters (when needed), undo state (when needed), and
- * overriding execute() and undo().
- *
- * This base class can already be used as a command that does nothing.
- *
- * @param R  the type of the receiver
- *
- * @author Tom Verhoeff (TU/e)
- */
+
 public class Command<R> {
 
     /** The receiving object. */

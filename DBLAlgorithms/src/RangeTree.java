@@ -40,16 +40,20 @@ public class RangeTree<Key extends Comparable<Key>>  {
     }
 
     private Node insert(Node h, Key x, Key y) {
-        if (h == null) return new Node(x, y);
+        if (h == null) 
+            return new Node(x, y);
         h.bst.put(y, x);
-        if (lessEqual(x, h.x)) h.left  = insert(h.left,  x, y);
-        else              h.right = insert(h.right, x, y);
+        if (lessEqual(x, h.x)) 
+            h.left  = insert(h.left,  x, y);
+        else              
+            h.right = insert(h.right, x, y);
         return h;
     }
 
 
    /*************************************************************************
     *  Range searching
+     * @param rect
     *************************************************************************/
 
 
@@ -59,8 +63,10 @@ public class RangeTree<Key extends Comparable<Key>>  {
         // find splitting node h where h.x is in the x-interval
         Node h = root;
         while (h != null && !intervalX.contains(h.x)) {
-            if      (lessEqual(intervalX.high, h.x)) h = h.left;
-            else if (lessEqual(h.x, intervalX.low))  h = h.right;
+            if (lessEqual(intervalX.high, h.x)) 
+                h = h.left;
+            else if (lessEqual(h.x, intervalX.low))  
+                h = h.right;
         }
         if (h == null) return;
 

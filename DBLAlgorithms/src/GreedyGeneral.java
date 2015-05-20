@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-public class GreedyGeneral extends LabelSolver {
+class GreedyGeneral extends LabelSolver {
 
     int width;
     int height;
@@ -138,6 +138,7 @@ public class GreedyGeneral extends LabelSolver {
                     new Interval<Integer>(label.x, label.x + width), 
                     new Interval<Integer>(label.y, label.y + height));
             label.overlappingLabels = QT.query2D(rect);
+            label.overlappingLabels.remove(label);
             queue.add(label);
         }
     }

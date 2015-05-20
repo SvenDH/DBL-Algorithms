@@ -11,7 +11,7 @@ import java.util.List;
  * 
  *************************************************************************/
 
-public class QuadTree {
+class QuadTree {
     private Node root;
     private int width;
     private int height;
@@ -75,7 +75,9 @@ public class QuadTree {
         int ymax = rect.intervalY.high;
         if (rect.contains(h.x, h.y)){
             for (LabelGeneral label : h.labels){
-                if ((label.x != xmin || label.y != ymin)){
+                if (label.x + width != xmin && label.y + height != ymin
+                        && label.x != xmax && label.y != ymax ){
+                        //&& !(label.x == xmin && label.y == ymin)){
                     //System.out.println(label.x+", "+xmax);
                     result.add(label);
                 }
@@ -86,7 +88,10 @@ public class QuadTree {
         if (xmax >= h.x &&  ymin < h.y) query2D(h.SE, rect, result);
         if (xmax >= h.x && ymax >= h.y) query2D(h.NE, rect, result);
     }
-    /*
+    //public static void main(String[] args) {
+    //    LabelPlacer.main(args);
+    //}
+    
     public static void main(String[] args) {
         QuadTree st = new QuadTree(10,10);
 
@@ -98,8 +103,8 @@ public class QuadTree {
         }
         // do some range searches
         for (int i = 0; i < 1; i++) {
-            int x = 10;
-            int y = 10;
+            int x = 0;
+            int y = 0;
             LabelGeneral label = new LabelGeneral(new PointGeneral(x, y), x, y);
             Interval<Integer> intX = new Interval<Integer>(x, x + 10);
             Interval<Integer> intY = new Interval<Integer>(y, y + 10);
@@ -110,5 +115,5 @@ public class QuadTree {
             }
         }
     }
-    */
+    
 }

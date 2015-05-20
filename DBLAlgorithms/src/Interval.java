@@ -6,7 +6,7 @@
  *
  *************************************************************************/
 
-public class Interval<Key extends Comparable<Key>> { 
+class Interval<Key extends Comparable<Key>> { 
     public final Key low;      // left endpoint
     public final Key high;     // right endpoint
    

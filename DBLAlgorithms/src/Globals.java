@@ -1,4 +1,4 @@
-public class Globals {
+class Globals {
         static int minX;
         static int maxX;
         static int minY;

@@ -2,7 +2,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class PointGeneral extends PointData {
+class PointGeneral extends PointData {
 
     List<LabelGeneral> labels;
     

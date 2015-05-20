@@ -130,11 +130,13 @@ public class LabelPlacer {
             }
         }
         
+        System.out.println("number of labels: " + numberOfLabels);
+        
         for (int i = 0; i < numberOfPoints; i++) {
             System.out.println
                 (outputList.get(i).x + " " + outputList.get(i).y + " " + outputList.get(i).getLabelInfo());
         }
-        System.out.println("number of labels: " + numberOfLabels);
-        //Draw.createAndShowGUI();     
+        
+        Draw.createAndShowGUI();     
     }
 }

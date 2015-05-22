@@ -73,11 +73,15 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
     }
 
     private Value get(Node x, Key key) {
-        if (x == null) return null;
+        if (x == null) 
+            return null;
         int cmp = key.compareTo(x.key);
-        if      (cmp == 0) return x.val;
-        else if (cmp  < 0) return get(x.left,  key);
-        else               return get(x.right, key);
+        if (cmp == 0) 
+            return x.val;
+        else if (cmp  < 0) 
+            return get(x.left,  key);
+        else               
+            return get(x.right, key);
     }
 
    /*************************************************************************
@@ -89,12 +93,19 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
 
     // make new node the root with uniform probability
     private Node put(Node x, Key key, Value val) {
-        if (x == null) return new Node(key, val);
+        if (x == null)
+            return new Node(key, val);
         int cmp = key.compareTo(x.key);
-        if (cmp == 0) { x.val = val; return x; }
-        if (StdRandom.bernoulli(1.0 / (size(x) + 1.0))) return putRoot(x, key, val);
-        if (cmp < 0) x.left  = put(x.left,  key, val); 
-        else         x.right = put(x.right, key, val); 
+        if (cmp == 0) {
+            x.val = val;
+            return x;
+        }
+        if (StdRandom.bernoulli(1.0 / (size(x) + 1.0))) 
+            return putRoot(x, key, val);
+        if (cmp < 0) 
+            x.left  = put(x.left,  key, val);
+        else         
+            x.right = put(x.right, key, val);
         // (x.N)++;
         fix(x);
         return x;
@@ -102,11 +113,20 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
 
 
     private Node putRoot(Node x, Key key, Value val) {
-        if (x == null) return new Node(key, val);
+        if (x == null) 
+            return new Node(key, val);
         int cmp = key.compareTo(x.key);
-        if      (cmp == 0) { x.val = val; return x; }
-        else if (cmp  < 0) { x.left  = putRoot(x.left,  key, val); x = rotR(x); }
-        else               { x.right = putRoot(x.right, key, val); x = rotL(x); }
+        if (cmp == 0) { 
+            x.val = val;
+            return x;
+        }
+        else if (cmp  < 0) { 
+            x.left  = putRoot(x.left, key, val); 
+            x = rotR(x); 
+        }
+        else { 
+            x.right = putRoot(x.right, key, val); 
+            x = rotL(x); }
         return x;
     }
 

@@ -29,7 +29,7 @@ public class PlaceLabelCommand<T extends Label> extends Command<PointData> {
     public int getHorizontal() {
         return this.horizontalDirection;
     }
-    
+    /*
     @Override
     public void execute() {
         super.execute();
@@ -90,5 +90,5 @@ public class PlaceLabelCommand<T extends Label> extends Command<PointData> {
                 System.out.println("Something went wrong with the direction");
             }
         }
-    }
+    }*/
 }

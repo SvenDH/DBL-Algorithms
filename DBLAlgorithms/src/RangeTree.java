@@ -68,7 +68,8 @@ public class RangeTree<Key extends Comparable<Key>>  {
             else if (lessEqual(h.x, intervalX.low))  
                 h = h.right;
         }
-        if (h == null) return;
+        if (h == null) 
+            return;
 
         if (rect.contains(h.x, h.y)) System.out.println("A: " + h.x + ", " + h.y);
 
@@ -78,8 +79,10 @@ public class RangeTree<Key extends Comparable<Key>>  {
 
     // find all keys >= xmin in subtree rooted at h
     private void queryL(Node h, Interval2D<Key> rect) {
-        if (h == null) return;
-        if (rect.contains(h.x, h.y)) System.out.println("B: " + h.x + ", " + h.y);
+        if (h == null) 
+            return;
+        if (rect.contains(h.x, h.y)) 
+            System.out.println("B: " + h.x + ", " + h.y);
         if (!lessEqual(h.x, rect.intervalX.low)) {
             enumerate(h.right, rect);
             queryL(h.left, rect);
@@ -91,8 +94,10 @@ public class RangeTree<Key extends Comparable<Key>>  {
 
     // find all keys <= xmax in subtree rooted at h
     private void queryR(Node h, Interval2D<Key> rect) {
-        if (h == null) return;
-        if (rect.contains(h.x, h.y)) System.out.println("C: " + h.x + ", " + h.y);
+        if (h == null) 
+            return;
+        if (rect.contains(h.x, h.y)) 
+            System.out.println("C: " + h.x + ", " + h.y);
         if (!lessEqual(rect.intervalX.high, h.x)) {
             enumerate(h.left, rect);
             queryR(h.right, rect);
@@ -104,7 +109,8 @@ public class RangeTree<Key extends Comparable<Key>>  {
 
     // precondition: subtree rooted at h has keys between xmin and xmax
     private void enumerate(Node h, Interval2D<Key> rect) {
-        if (h == null) return;
+        if (h == null) 
+            return;
         System.out.println("integrity: " + h.bst.check());
         Iterable<Key> list = h.bst.range(rect.intervalY);
         for (Key y : list) {

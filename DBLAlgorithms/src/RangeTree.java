@@ -63,15 +63,16 @@ public class RangeTree<Key extends Comparable<Key>>  {
         // find splitting node h where h.x is in the x-interval
         Node h = root;
         while (h != null && !intervalX.contains(h.x)) {
-            if (lessEqual(intervalX.high, h.x)) 
+            if (lessEqual(intervalX.high, h.x))
                 h = h.left;
-            else if (lessEqual(h.x, intervalX.low))  
+            else if (lessEqual(h.x, intervalX.low))
                 h = h.right;
         }
-        if (h == null) 
+        if (h == null)
             return;
 
-        if (rect.contains(h.x, h.y)) System.out.println("A: " + h.x + ", " + h.y);
+        if (rect.contains(h.x, h.y))
+            System.out.println("A: " + h.x + ", " + h.y);
 
         queryL(h.left,  rect);
         queryR(h.right, rect);

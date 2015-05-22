@@ -163,8 +163,7 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
     }
 
     // remove and return value associated with given key; if no such key, return null
-    public Value remove(Key key) {
-        Value val = get(key);
+    public Value remove(Key key, Value val) {
         root = remove(root, key);
         return val;
     }

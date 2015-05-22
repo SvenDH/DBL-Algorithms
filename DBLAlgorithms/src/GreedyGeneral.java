@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,10 +20,30 @@ class GreedyGeneral extends LabelSolver {
     public GreedyGeneral (int width, int height) {
         this.width = width;
         this.height = height;
-        queue = new PriorityQueue<>(
-                (LabelGeneral o1, LabelGeneral o2) -> 
-                o1.overlappingLabels.size() - o2.overlappingLabels.size() //Heuristics
-        );
+        queue = new PriorityQueue<>(new Comparator<LabelGeneral>(){
+                @Override
+                public int compare(LabelGeneral o1, LabelGeneral o2){
+                    if(o1.overlappingLabels.size() > o2.overlappingLabels.size())
+                        return 1;
+                    else if(o1.overlappingLabels.size() < o2.overlappingLabels.size())
+                        return -1;
+                    else {
+                        int o1min = Integer.MAX_VALUE;
+                        int o2min = Integer.MAX_VALUE;
+                        for (PointGeneral point : o1.points){
+                            if (point.labels.size() < o1min){
+                                o1min = point.labels.size();
+                            }
+                        }
+                        for (PointGeneral point : o2.points){
+                            if (point.labels.size() < o2min){
+                                o2min = point.labels.size();
+                            }
+                        }
+                        return o1min - o2min;
+                    }
+                }
+        });
         labelMap = new HashMap<>();
         pointList = new ArrayList<>();
         QT = new QuadTree(width, height);
@@ -160,6 +181,18 @@ class GreedyGeneral extends LabelSolver {
                 }
                 allOverlaps.removeAll(point.labels);
                 int totalOverlaps = allOverlaps.size();
+                if (totalOverlaps == max) {
+                    if( point.x < pointData.x) {
+                        if( point.y > pointData.y) {
+                            pointData = point;
+                            max = totalOverlaps;
+                        }
+                    }
+                    if( point.y > pointData.y) {
+                        pointData = point;
+                        max = totalOverlaps; 
+                    }
+                }
                 if (totalOverlaps > max) {
                     pointData = point;
                     max = totalOverlaps;

@@ -137,8 +137,10 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
     *  deletion
     *************************************************************************/
     private Node joinLR(Node a, Node b) { 
-        if (a == null) return b;
-        if (b == null) return a;
+        if (a == null) 
+            return b;
+        if (b == null)
+            return a;
 
         if (StdRandom.bernoulli((double) size(a) / (size(a) + size(b))))  {
             a.right = joinLR(a.right, b);
@@ -152,20 +154,28 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
         }
     }
 
-    private Node remove(Node x, Key key) {
-        if (x == null) return null; 
-        int cmp = key.compareTo(x.key);
-        if      (cmp == 0) x = joinLR(x.left, x.right);
-        else if (cmp  < 0) x.left  = remove(x.left,  key);
-        else               x.right = remove(x.right, key);
+    private void remove(Node x, Key key, Value val) {
+        if (x == null) 
+            return;
+        int cmpx = key.compareTo(x.key);
+        if (cmpx == 0) {
+            if (x.val == val) {
+                x = joinLR(x.left, x.right);
+            } else {
+                remove(x.right, key, val);
+            }
+        }
+        else if (cmpx  < 0) {
+            remove(x.left, key, val);
+        } else {
+            remove(x.right, key, val);
+        }
         fix(x);
-        return x;
     }
 
     // remove and return value associated with given key; if no such key, return null
-    public Value remove(Key key, Value val) {
-        root = remove(root, key);
-        return val;
+    public void remove(Key key, Value val) {
+        remove(root, key, val);
     }
 
 
@@ -185,10 +195,18 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
         return (Iterable<Key>) list;
     }
     private void range(Node x, Interval<Key> interval, Queue<Key> list) {
-        if (x == null) return;
-        if (!less(x.key, interval.low))  range(x.left, interval, list);
-        if (interval.contains(x.key))    list.enqueue(x.key);
-        if (!less(interval.high, x.key)) range(x.right, interval, list);
+        if (x == null) {
+            return;
+        }
+        if (!less(x.key, interval.low)) {
+            range(x.left, interval, list);
+        }
+        if (interval.contains(x.key)) {
+            list.enqueue(x.key);
+        }
+        if (!less(interval.high, x.key)) {
+            range(x.right, interval, list);
+        }
     }
 
 
@@ -239,7 +257,8 @@ public class RangeSearch<Key extends Comparable<Key>, Value>  {
 
     // fix subtree count field
     private void fix(Node x) {
-        if (x == null) return;                 // check needed for remove
+        if (x == null)  // check needed for remove
+            return;
         x.N = 1 + size(x.left) + size(x.right);
     }
 

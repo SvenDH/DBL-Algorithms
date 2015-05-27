@@ -50,6 +50,9 @@ public class RangeTree<Key extends Comparable<Key>>  {
         return h;
     }
 
+    public void remove(Key x, Key y) {
+        root.bst.remove(x, y);
+    }
 
    /*************************************************************************
     *  Range searching

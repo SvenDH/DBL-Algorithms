@@ -21,6 +21,11 @@ public class RangeTreeTester {
             int y = Integer.parseInt(line.substring(space + 1));
             rangeTree.insert(x, y);
         }
+//        for (int i = 0; i < 11; i++) {
+//            for (int j = 0; j < 11; j++) {
+//                rangeTree.insert(i, j);
+//            }
+//        }
         System.out.println("Starting query after input");
         rangeTree.query2D(new Interval2D<Integer>(new Interval<Integer>(0, 10), new Interval<Integer>(0, 10)));
         while (true) {

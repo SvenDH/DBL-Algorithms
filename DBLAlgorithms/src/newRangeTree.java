@@ -24,7 +24,7 @@ public class newRangeTree {
             root = new Node(x, y);
         }
         else {
-            insert(new Node(x, y), root);
+            root = insert(new Node(x, y), root);
         }
     }
     /**
@@ -34,7 +34,7 @@ public class newRangeTree {
      * @param y The node which is used to check where the given node should be
      * inserted, varying per iteration
      */
-    private void insert(Node x, Node y) {
+    private Node insert(Node x, Node y) {
         if (x.x == y.x) {
             if (x.y == y.y) {
                 System.out.println(
@@ -44,43 +44,92 @@ public class newRangeTree {
                 if (y.left == null) {
                     y.left = x;
                 } else {
-                    insert(x, y.left);
+                    if (y.left.y < x.y) {
+                        y = putRoot(x, y);
+                    } else {
+                        insert(x, y.left);
+                    }
                 }
             } else {
                 if (y.right == null) {
                     y.right = x;
                 } else {
-                    insert(x, y.right);
+                    if (y.right.y > x.y) {
+                        y = putRoot(x, y);
+                    } else {
+                        insert(x, y.right);
+                    }
                 }
             }
         } else if (x.x < y.x) {
             if (y.left == null) {
                 y.left = x;
             } else {
-                insert(x, y.left);
+                if (y.left.x < x.x) {
+                    y = putRoot(x, y);
+                } else {
+                    insert(x, y.left);
+                }
             }
-        } else {
+        } else { // x.x > y.x
             if (y.right == null) {
                 y.right = x;
             } else {
-                insert(x, y.right);
+                if (y.right.x > x.x) {
+                    y = putRoot(x, y);
+                } else {
+                    insert(x, y.right);
+                }
             }
         }
-    }
-    
-    public void remove(int x, int y) {
-        remove(new Node(x, y), root);
+        return y;
     }
     
     /**
-     * Removes a specified node, given that it exists
+     * Puts node x as the root of a subtree rooted at y
+     * @param x
+     * @param y Node to be scanned
+     * @pre Node x does not already exist in the tree
+     */
+    
+    private Node putRoot(Node x, Node y) {
+        if (y == null) {
+            return x;
+        }
+        if (x.x == y.x) {
+            if (x.y == y.y) {
+                System.out.println(
+                        "Precondition of putRoot violated; "
+                                + "node to be inserted already exists");
+            } else if (x.y < y.y) {
+                y.left = putRoot(x, y.left);
+                y = rotR(y);
+            } else {
+                y.right = putRoot(x, y.right);
+                y = rotL(y);
+            }
+        } else if (x.x < y.x) {
+            y.left  = putRoot(x, y.left);
+            y = rotR(y);
+        } else { //x.x > y.x
+            y.right = putRoot(x, y.right);
+            y = rotL(y);
+        }
+        return y;
+    }
+    
+    public void remove(int x, int y) {
+        root = remove(new Node(x, y), root);
+    }
+
+    /** Removes a specified node, given that it exists.
      * @param x the specified node
-     * @param y the node which is being checked
+     * @param y the node which is being checked, varying per iteration
      * @pre Node x != null
      */
-    private void remove(Node x, Node y) {
+    private Node remove(Node x, Node y) {
         if (y == null) {
-            return;
+            return null;
         }
         if (x.x == y.x) {
             if (x.y == y.y) {
@@ -96,6 +145,7 @@ public class newRangeTree {
             remove(x, y.right);
         }
         fix(y);
+        return y;
     }
     
     private Node joinLR(Node a, Node b) {
@@ -130,6 +180,27 @@ public class newRangeTree {
         }
         x.N = 1 + size(x.left) + size(x.right);
     }
+    
+    // right rotate
+    private Node rotR(Node h) {
+        Node x = h.left;
+        h.left = x.right;
+        x.right = h;
+        fix(h);
+        fix(x);
+        return x;
+    }
+
+    // left rotate
+    private Node rotL(Node h) {
+        Node x = h.right;
+        h.right = x.left;
+        x.left = h;
+        fix(h);
+        fix(x);
+        return x;
+    }
+
     
     public void query2D(Interval2D<Integer> rect) {
         Interval<Integer> intervalX = rect.intervalX;

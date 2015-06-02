@@ -1,4 +1,5 @@
 
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class RangeTreeTester {
@@ -27,6 +28,7 @@ public class RangeTreeTester {
 //            }
 //        }
         System.out.println("Starting query after input");
+        HashSet set = new HashSet();
         rangeTree.query2D(new Interval2D<Integer>(new Interval<Integer>(0, 10), new Interval<Integer>(0, 10)));
         while (true) {
             line = sc.nextLine();

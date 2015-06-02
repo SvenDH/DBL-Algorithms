@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import sun.misc.Queue;
 
 
@@ -25,6 +26,15 @@ public class newRangeTree {
         }
         else {
             root = insert(new Node(x, y), root);
+        }
+    }
+    
+    public void insert(Node a) {
+        if (root == null) {
+            root = a;
+        }
+        else {
+            root = insert(a, root);
         }
     }
     /**
@@ -202,10 +212,11 @@ public class newRangeTree {
     }
 
     
-    public void query2D(Interval2D<Integer> rect) {
+    public HashSet<Node> query2D(Interval2D<Integer> rect) {
         Interval<Integer> intervalX = rect.intervalX;
         // find splitting node h where h.x is in the x-interval
         Node h = root;
+        HashSet<Node> set = new HashSet();
         while (h != null && !intervalX.contains(h.x)) {
             if (intervalX.high <= h.x) {
                 h = h.left;
@@ -214,22 +225,24 @@ public class newRangeTree {
             }
         }
         if (h == null) {
-            return;
+            return null;
         }
         if (rect.contains(h.x, h.y)) {
-            System.out.println("A: " + h.x + ", " + h.y);
+            set.add(h);
         }
-        queryL(h.left,  rect);
-        queryR(h.right, rect);
+        set.addAll(queryL(h.left,  rect));
+        set.addAll(queryR(h.right, rect));
+        return set;
     }
     
     // find all keys >= xmin in subtree rooted at h
-    private void queryL(Node h, Interval2D<Integer> rect) {
+    private HashSet<Node> queryL(Node h, Interval2D<Integer> rect) {
         if (h == null) {
-            return;
+            return null;
         }
+        HashSet<Node> set = new HashSet();
         if (rect.contains(h.x, h.y)) {
-            System.out.println("B: " + h.x + ", " + h.y);
+            set.add(h);
         }
         if (h.x > rect.intervalX.low) {
             enumerate(h.right, rect);
@@ -237,15 +250,17 @@ public class newRangeTree {
         } else {
             queryL(h.right, rect);
         }
+        return set;
     }
 
     // find all keys <= xmax in subtree rooted at h
-    private void queryR(Node h, Interval2D<Integer> rect) {
+    private HashSet<Node> queryR(Node h, Interval2D<Integer> rect) {
         if (h == null) {
-            return;
+            return null;
         }
+        HashSet<Node> set = new HashSet();
         if (rect.contains(h.x, h.y)) {
-            System.out.println("C: " + h.x + ", " + h.y);
+            set.add(h);
         }
         if (rect.intervalX.high > h.x) {
             enumerate(h.left, rect);
@@ -253,26 +268,28 @@ public class newRangeTree {
         } else {
             queryR(h.left, rect);
         }
+        return set;
     }
     
     // precondition: subtree rooted at h has keys in rect
-    private void enumerate(Node h, Interval2D<Integer> rect) {
+    private HashSet<Node> enumerate(Node h, Interval2D<Integer> rect) {
         if (h == null) {
-            return;
+            return null;
         }
-        ArrayList<Integer> list = range(h, rect.intervalY);
-        for (int x : list) {
-            int y = h.y;
-            System.out.println("D: " + x + ", " + y);
+        HashSet<Node> set = new HashSet();
+        ArrayList<Node> list = range(h, rect.intervalY);
+        for (Node x : list) {
+            set.add(x);
         }
+        return set;
     }
     
-    public ArrayList<Integer> range(Node x, Interval<Integer> interval) { 
-        ArrayList<Integer> list = new ArrayList<Integer>();
+    public ArrayList<Node> range(Node x, Interval<Integer> interval) { 
+        ArrayList<Node> list = new ArrayList<Node>();
         range(x, interval, list);
         return list;
     }
-    private void range(Node x, Interval<Integer> interval, ArrayList<Integer> list) {
+    private void range(Node x, Interval<Integer> interval, ArrayList<Node> list) {
         if (x == null) {
             return;
         }
@@ -280,7 +297,7 @@ public class newRangeTree {
             range(x.left, interval, list);
         }
         if (interval.contains(x.x)) {
-            list.add(x.x);
+            list.add(x);
         }
         if (interval.high >= x.x) {
             range(x.right, interval, list);

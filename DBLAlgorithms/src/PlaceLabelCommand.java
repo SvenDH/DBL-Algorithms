@@ -7,8 +7,8 @@ public class PlaceLabelCommand<T extends Label> extends Command<PointData> {
     private final int E = 3;
     private int verticalDirection;
     private int horizontalDirection;
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
     public PlaceLabelCommand(PointData point, int verticalDirection, int horizontalDirection, int width, int height) throws NullPointerException {
         super(point);
@@ -29,7 +29,7 @@ public class PlaceLabelCommand<T extends Label> extends Command<PointData> {
     public int getHorizontal() {
         return this.horizontalDirection;
     }
-    /*
+    
     @Override
     public void execute() {
         super.execute();
@@ -90,5 +90,5 @@ public class PlaceLabelCommand<T extends Label> extends Command<PointData> {
                 System.out.println("Something went wrong with the direction");
             }
         }
-    }*/
+    }
 }

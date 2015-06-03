@@ -13,9 +13,10 @@ class FDL1Slider extends LabelSolver{
     int width;
     int height;
     PriorityQueue<LabelGeneral> queue;
-    HashMap<Point,HashSet> labelMap;
+    HashMap<Point,LabelGeneral> labelMap;
     List<PointData> pointList;
     newRangeTree rangeTree;    
+    //List<PointData> pts;
     
     public FDL1Slider(int width, int height) {
         this.width = width;
@@ -47,7 +48,7 @@ class FDL1Slider extends LabelSolver{
         labelMap = new HashMap<>();
         pointList = new ArrayList<>();
         rangeTree = new newRangeTree();
-
+        //pts = new ArrayList<>();
     } 
     
     @Override
@@ -88,7 +89,7 @@ class FDL1Slider extends LabelSolver{
             }            
             //Put new labels in datastructures
             for (Point pos : labelPositions){
-                HashSet label = labelMap.get(pos);
+                LabelGeneral label = labelMap.get(pos);
                 if (label == null) {
                     label = new LabelGeneral(pointData, pos.x, pos.y);
                     labelMap.put(pos, label);
@@ -110,13 +111,14 @@ class FDL1Slider extends LabelSolver{
     }
     
     void findOverlaps(){
-        for (Map.Entry<Point, HashSet> entry : labelMap.entrySet()){
-            HashSet label = entry.getValue();
+        for (Map.Entry<Point, LabelGeneral> entry : labelMap.entrySet()){
+            LabelGeneral label = entry.getValue();
             //Create interval strictly smaller than this label
             Interval2D<Integer> rect = new Interval2D<Integer>(
                     new Interval<Integer>(label.x, label.x + width), 
                     new Interval<Integer>(label.y, label.y + height));
-            label.overlappingLabels = rangeTree.query2D(rect);
+            label.neighbourlaps = rangeTree.query2D(rect);
+            label.overlappingLabels = new ArrayList<LabelGeneral>(label.neighbourlaps);
             label.overlappingLabels.remove(label);
             queue.add(label);
         }
@@ -221,7 +223,5 @@ class FDL1Slider extends LabelSolver{
             //System.out.println("Placing label: " + pointData.getLabelInfo());
         }
     }
-    
-    
 
 }

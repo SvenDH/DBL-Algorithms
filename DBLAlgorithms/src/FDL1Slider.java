@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
-class FDL1Slider extends LabelSolver{
+class FDL1Slider extends SliderSolver{
    
     int width;
     int height;
@@ -50,28 +50,6 @@ class FDL1Slider extends LabelSolver{
         rangeTree = new newRangeTree();
         //pts = new ArrayList<>();
     } 
-    
-    @Override
-    List<PointData> getLabeledPoints2pos(List<Point> points) { 
-        //Find all overlapping labels
-        findOverlaps();
-        
-        //Place labels
-        placeLabels();
-        
-        return pointList;
-    }
-    
-    @Override
-    List<PointData> getLabeledPoints4pos(List<Point> points) {  
-        //Find all overlapping labels
-        findOverlaps();
-        
-        //Place labels
-        placeLabels();
-        
-        return pointList;
-    }
     
     @Override
     List<PointData> getLabeledPoints1slider(List<Point> points) {
@@ -125,7 +103,7 @@ class FDL1Slider extends LabelSolver{
     }
     
     void placeLabels () {
-        while (!queue.isEmpty()) {
+       /* while (!queue.isEmpty()) {
             LabelGeneral label = queue.poll();
             
             PointGeneral pointData = label.points.get(0);
@@ -221,7 +199,7 @@ class FDL1Slider extends LabelSolver{
             }
             //System.out.println("Labels left: " + pointData.labels.size());
             //System.out.println("Placing label: " + pointData.getLabelInfo());
-        }
+        }*/
     }
 
 }

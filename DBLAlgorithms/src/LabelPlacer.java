@@ -155,6 +155,7 @@ public class LabelPlacer {
         }
         
         LabelSolver labelSolver;
+        SliderSolver sliderSolver;
         /*
          * Todo: chose best algorithm for numberOfPoints and model
          */
@@ -162,6 +163,7 @@ public class LabelPlacer {
         //    labelSolver = BruteForceSolver.getInstance(width, height);
         //} else {
             labelSolver = new GreedyGeneral(width, height);
+            sliderSolver = new FDL1Slider(width, height);
         //}
 
         if (model.equals("2pos")) {
@@ -169,7 +171,7 @@ public class LabelPlacer {
         } else if (model.equals("4pos")) {
             outputList = labelSolver.getLabeledPoints4pos(inputList);
         } else if (model.equals("1slider")) {
-            outputList = labelSolver.getLabeledPoints1slider(inputList);
+            outputList = sliderSolver.getLabeledPoints1slider(inputList);
         } else {
             throw new IllegalArgumentException("Invalid model");
         }

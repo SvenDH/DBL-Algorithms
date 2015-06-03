@@ -15,7 +15,7 @@ class FDL1Slider extends SliderSolver{
     PriorityQueue<LabelGeneral> queue;
     HashMap<Point,LabelGeneral> labelMap;
     List<PointData> pointList;
-    newRangeTree rangeTree;    
+    newRangeTree rangeTree;   
     
     public FDL1Slider(int width, int height) {
         this.width = width;
@@ -93,8 +93,8 @@ class FDL1Slider extends SliderSolver{
             Interval2D<Integer> rect = new Interval2D<Integer>(
                     new Interval<Integer>(label.x, label.x + width), 
                     new Interval<Integer>(label.y, label.y + height));
-            
-            label.neighbourlaps = rangeTree.query2D(rect);
+            HashSet pts = rangeTree.query2D(rect);
+            label.neighbourlaps = pts;
             label.neighbourlaps.remove(label);
             queue.add(label);
         }

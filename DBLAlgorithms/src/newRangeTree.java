@@ -210,6 +210,12 @@ public class newRangeTree {
         return x;
     }
 
+    public HashSet<Node> query2D(LabelGeneral label) {
+        return query2D(
+                new Interval2D<Integer>(
+                        new Interval(label.x - Globals.width, label.x + Globals.width), 
+                        new Interval(label.y - Globals.height, label.y + Globals.height)));
+    }
     
     public HashSet<Node> query2D(Interval2D<Integer> rect) {
         Interval<Integer> intervalX = rect.intervalX;
@@ -283,7 +289,7 @@ public class newRangeTree {
         return set;
     }
     
-    public ArrayList<Node> range(Node x, Interval<Integer> interval) { 
+    private ArrayList<Node> range(Node x, Interval<Integer> interval) { 
         ArrayList<Node> list = new ArrayList<Node>();
         range(x, interval, list);
         return list;

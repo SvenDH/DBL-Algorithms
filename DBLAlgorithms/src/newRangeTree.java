@@ -199,7 +199,7 @@ public class newRangeTree {
 
     public HashSet<Node> query2D(LabelGeneral label) {
         return query2D(
-                new Interval2D<Integer>(
+                new Interval2D<>(
                         new Interval(label.x - Globals.width, label.x + Globals.width), 
                         new Interval(label.y - Globals.height, label.y + Globals.height)));
     }

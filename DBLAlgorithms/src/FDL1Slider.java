@@ -89,16 +89,7 @@ class FDL1Slider extends SliderSolver{
     void findOverlaps(){
         for (Map.Entry<Point, LabelGeneral> entry : labelMap.entrySet()){
             LabelGeneral label = entry.getValue();
-            //Create interval strictly smaller than this label
-//            Interval2D<Integer> rect = new Interval2D<Integer>(
-//                    new Interval<Integer>(label.x, label.x + width), 
-//                    new Interval<Integer>(label.y, label.y + height));
-            HashSet<Node> pts = rangeTree.query2D(label);
-            for(Node node : pts) {
-                if (node.label != null) {
-                    label.neighbourlaps.add(node.label);
-                }
-            }
+            label.neighbourlaps = rangeTree.query2D(label);
             label.neighbourlaps.remove(label);
             queue.add(label);
         }
@@ -114,7 +105,7 @@ class FDL1Slider extends SliderSolver{
             int max = 0;
             for (PointGeneral point : label.points) {
                 //All overlaps the labels of this point can make
-                Set<Label> allOverlaps = new HashSet<>();
+                HashSet<Node> allOverlaps = new HashSet<>();
                 for (LabelGeneral otherLabel : point.labels) {
                     allOverlaps.addAll(otherLabel.neighbourlaps);
                 }
@@ -160,21 +151,20 @@ class FDL1Slider extends SliderSolver{
                     if (otherLabel.points.isEmpty()){
                         //If not label can not be placed anymore so all overlapping labels need to be updated
                         deleteList.add(otherLabel);
-                        for (LabelGeneral updateLabel : otherLabel.neighbourlaps) {
-                            updateList.add(updateLabel);
+                        for (Node updateLabel : otherLabel.neighbourlaps) {
+                            updateList.add(updateLabel.label);
                         }
                     }
                 }
             }
             pointData.labels = new ArrayList<>();
             pointData.labels.add(label);
-            
             //Remove all labels that overlap this label
-            for (LabelGeneral otherLabel : label.neighbourlaps) {
-                deleteList.add(otherLabel);
+            for (Node node : label.neighbourlaps) {
+                deleteList.add(node.label);
                 //Label can not be placed anymore so all overlapping labels need to be updated
-                for (LabelGeneral updateLabel : otherLabel.neighbourlaps) {
-                    updateList.add(updateLabel);
+                for (Node updateLabel : node.label.neighbourlaps) {
+                    updateList.add(updateLabel.label);
                 }
             }
             
@@ -183,8 +173,8 @@ class FDL1Slider extends SliderSolver{
             
             //Delete all labels from delete list
             for (LabelGeneral otherLabel : deleteList) {
-                for (LabelGeneral updateLabel : otherLabel.neighbourlaps) {
-                    updateLabel.neighbourlaps.remove(otherLabel);
+                for (Node updateLabel : otherLabel.neighbourlaps) {
+                    updateLabel.label.neighbourlaps.remove(otherLabel);
                 }
                 for (PointGeneral updatePoint : otherLabel.points) {
                     updatePoint.labels.remove(otherLabel);

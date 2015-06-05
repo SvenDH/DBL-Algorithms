@@ -2,7 +2,7 @@ import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 
-class LabelGeneral extends Label {
+public class LabelGeneral extends Label {
     
     List<PointGeneral> points; //Points that own this label
     List<LabelGeneral> overlappingLabels; //Labels this are within 

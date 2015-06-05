@@ -90,11 +90,15 @@ class FDL1Slider extends SliderSolver{
         for (Map.Entry<Point, LabelGeneral> entry : labelMap.entrySet()){
             LabelGeneral label = entry.getValue();
             //Create interval strictly smaller than this label
-            Interval2D<Integer> rect = new Interval2D<Integer>(
-                    new Interval<Integer>(label.x, label.x + width), 
-                    new Interval<Integer>(label.y, label.y + height));
-            HashSet pts = rangeTree.query2D(rect);
-            label.neighbourlaps = pts;
+//            Interval2D<Integer> rect = new Interval2D<Integer>(
+//                    new Interval<Integer>(label.x, label.x + width), 
+//                    new Interval<Integer>(label.y, label.y + height));
+            HashSet<Node> pts = rangeTree.query2D(label);
+            for(Node node : pts) {
+                if (node.label != null) {
+                    label.neighbourlaps.add(node.label);
+                }
+            }
             label.neighbourlaps.remove(label);
             queue.add(label);
         }

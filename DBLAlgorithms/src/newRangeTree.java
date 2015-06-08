@@ -162,7 +162,7 @@ public class newRangeTree {
             return b;
         }
     }
-    
+
     private int size(Node x) {
         if (x == null) {
             return 0;
@@ -199,7 +199,7 @@ public class newRangeTree {
 
     public HashSet<Node> query2D(LabelGeneral label) {
         return query2D(
-                new Interval2D<>(
+                new Interval2D<Integer>(
                         new Interval(label.x - Globals.width, label.x + Globals.width), 
                         new Interval(label.y - Globals.height, label.y + Globals.height)));
     }
@@ -222,8 +222,8 @@ public class newRangeTree {
         if (rect.contains(h.x, h.y)) {
             set.add(h);
         }
-        set.addAll(queryL(h.left,  rect));
-        set.addAll(queryR(h.right, rect));
+        if (queryL(h.left,  rect)!=null){set.addAll(queryL(h.left,  rect));} else {
+        if (queryR(h.left,  rect)!=null)set.addAll(queryR(h.right, rect)); }
         return set;
     }
     

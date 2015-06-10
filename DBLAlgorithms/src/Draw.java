@@ -113,23 +113,25 @@ class Draw extends JPanel {
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
             
             // Draw red rectangle for all possible labels
-            if (point.getLabelInfo().equals("SE")) {
+            String info = point.getLabelInfo();
+                
+            if (info.equals("SE")) {
                 g2d.setColor(Color.RED);
                 g2d.fillRect(point.x, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.getLabelInfo().equals("SW")){
+            if (info.equals("SW")){
                 g2d.setColor(Color.BLUE);
                 g2d.fillRect(point.x - LabelPlacer.width, point.y - LabelPlacer.height, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.getLabelInfo().equals("NE")){
+            if (info.equals("NE")){
                 g2d.setColor(Color.YELLOW);
                 g2d.fillRect(point.x, point.y, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.getLabelInfo().equals("NW")){
+            if (info.equals("NW")){
                 g2d.setColor(Color.GREEN);
                 g2d.fillRect(point.x - LabelPlacer.width, point.y, LabelPlacer.width, LabelPlacer.height);
             } else
-            if (point.getLabelInfo().equals("NIL")){
+            if (info.equals("NIL")){
                 //Do nothing
                 // Color to red and transparancy to 0.6f.
                 g2d.setColor(Color.RED);
@@ -138,6 +140,10 @@ class Draw extends JPanel {
                 drawCenteredCircle(g2d, point.x, point.y, 50);
             } else {
                 //Draw Label for slider model
+                double value = Double.parseDouble(info);
+                value *= Globals.width;
+                g2d.setColor(Color.GREEN);
+                g2d.fillRect(point.x - Globals.width + (int)value, point.y, Globals.width + (int)value, Globals.height);
             }
         }
     }

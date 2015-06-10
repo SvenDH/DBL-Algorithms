@@ -155,15 +155,15 @@ public class LabelPlacer {
         }
         
         LabelSolver labelSolver;
-        SliderSolver sliderSolver;
+        //SliderSolver sliderSolver;
         /*
          * Todo: chose best algorithm for numberOfPoints and model
          */
         //if (numberOfPoints <= NB) {
         //    labelSolver = BruteForceSolver.getInstance(width, height);
         //} else {
-            labelSolver = new GreedyGeneral(width, height);
-            sliderSolver = new FDL1Slider(width, height);
+            labelSolver = new ForceDirectedSimulatedAnnealing(width, height);
+            //sliderSolver = new FDL1Slider(width, height);
         //}
 
         if (model.equals("2pos")) {
@@ -171,7 +171,7 @@ public class LabelPlacer {
         } else if (model.equals("4pos")) {
             outputList = labelSolver.getLabeledPoints4pos(inputList);
         } else if (model.equals("1slider")) {
-            outputList = sliderSolver.getLabeledPoints1slider(inputList);
+            outputList = labelSolver.getLabeledPoints1slider(inputList);
         } else {
             throw new IllegalArgumentException("Invalid model");
         }
@@ -190,7 +190,7 @@ public class LabelPlacer {
             System.out.println
                 (outputList.get(i).x + " " + outputList.get(i).y + " " + outputList.get(i).getLabelInfo());
         }
-
+        /*
         int sum = 0;
         
         for (int i = 0; i < numberOfPoints - 1; i++) {
@@ -202,6 +202,7 @@ public class LabelPlacer {
             }
         }
         System.out.println("There are " + sum + " overlaps");
+        */
         Draw.createAndShowGUI();     
     }
 }

@@ -6,7 +6,6 @@
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -15,16 +14,9 @@ import javax.swing.JPanel;
 import java.util.Scanner;
 import java.util.Random;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 /**
@@ -91,16 +83,15 @@ class Draw extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        
         // Scaling factor: (0.06 for optimal view of entire 10.000x10.000 matrix
         // Translation: offset from origin
-        g2d.drawString("Amount of points: " + LabelPlacer.numberOfPoints + "  Amount of labels placed: " + Globals.numberOfLabels, 350, 15);
         AffineTransform t = AffineTransform.getTranslateInstance(0, getHeight());
         t.scale(1, -1);
         g2d.setTransform(t);
+        
         g2d.scale(0.09, 0.09);
         g2d.translate(500, 500);
-        
-
         
         // Draw the matrix
         g2d.drawLine(10000, 0, 10000, 10000);
@@ -155,30 +146,5 @@ class Draw extends JPanel {
                 g2d.fillRect(point.x - Globals.width + (int)value, point.y, Globals.width, Globals.height);
             }
         }
-       
-        
     }
-    
-        public static void save() throws IOException {
-//        BufferedImage bImg = new BufferedImage(990, 990, BufferedImage.TYPE_INT_RGB);
-//        Graphics2D cg = bImg.createGraphics();
-//        //q.paintAll(cg);
-//
-//        try {
-//        if (ImageIO.write(bImg, "png", new File("D:/output_image.png"))) {
-//        System.out.println("-- saved");
-//        }
-//
-//        } catch (IOException e) {
-//         // TODO Auto-generated catch block
-//         e.printStackTrace();
-//        }
-        
-//        Container c = getContentPane();
-//        BufferedImage im = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_ARGB);
-//        c.paint(im.getGraphics());
-//        ImageIO.write(im, "PNG", new File("shot.png"));
-        
-    }
-    
 }

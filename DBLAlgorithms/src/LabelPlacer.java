@@ -181,7 +181,6 @@ public class LabelPlacer {
                 numberOfLabels++;
             }
         }
-        Globals.numberOfLabels = numberOfLabels;
         
         System.out.println("number of labels: " + numberOfLabels);
         

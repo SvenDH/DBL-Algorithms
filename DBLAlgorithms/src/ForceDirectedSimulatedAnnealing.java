@@ -191,6 +191,20 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         overallForce += Math.abs(label.totalForce);
     }
     
+    public static double acceptanceP (double force, double newforce, double temperature){
+        if (newforce < force) return 1.0;
+        return Math.exp((force-newforce)/temperature);
+    }
+    
+    public double pAcceptance(double temperature, double deltaE) {
+        return Math.exp((deltaE)/temperature);
+    }
+    
+    public boolean shouldAccept(double temperature, double deltaE) {
+        return (deltaE > 0.0) || (new Random().nextDouble() <= pAcceptance(temperature, deltaE));
+    }
+    
+    
     @Override
     List<PointData> getLabeledPoints2pos(List<Point> points) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

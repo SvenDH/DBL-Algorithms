@@ -3,14 +3,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-/*************************************************************************
- *  Compilation:  javac QuadTree.java
- *  Execution:    java QuadTree M N
- *
- *  Quad tree.
- * 
- *************************************************************************/
-
 class QuadTree {
     private Node root;
     private int width;

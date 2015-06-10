@@ -36,12 +36,13 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     
     List<PointData> pointList;
     
-    RangeTree rangeTree;
+    SliderQuadTree QT;
      
     public ForceDirectedSimulatedAnnealing(int width, int height) {
         this.width = width;
         this.height = height;
         pointList = new ArrayList<>();
+        QT = new SliderQuadTree();
     }
 
     @Override
@@ -60,12 +61,25 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             label.point = pointData;
             pointList.add(pointData);
             labelList.add(label);
+            QT.insert(label);
         }
-        rangeTree = new RangeTree(labelList.toArray(new ForceLabel[labelList.size()]));
         
-        //Update overlap forces for all labels
+        //Find neighbour
         for (ForceLabel label : labelList){
-            updateForces(label);
+            List<ForceLabel> neighbours = QT.findNeighbours(label);
+            for(ForceLabel otherLabel : neighbours){
+                double force = 0.0;
+                if((label.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > label.x){ //Are the labels overlapping?
+                    if(label.x > otherLabel.x){ //other label is right from this label
+                        force = DEFAULT_FORCE_FAKT_OVERLAPPING * (otherLabel.x + Globals.width) - label.x + DEFAULT_OVERLAPPING_PENALTY;
+                    } else { //other label is left from this label
+                        force = -DEFAULT_FORCE_FAKT_OVERLAPPING * ((label.x + Globals.width) - otherLabel.x) - DEFAULT_OVERLAPPING_PENALTY;
+                    }
+                }
+                label.
+                label.neighbours.put(otherLabel, force);
+            }
+            
         }
         
         while (!obstructed.isEmpty()) {
@@ -137,7 +151,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         
         overallForce -= Math.abs(label.totalForce);
         
-        List<ForceLabel> overlaps = rangeTree.getOverlappingLabels(label);
+        List<ForceLabel> overlaps = new ArrayList<>(label.neighbours.keySet());
         if (overlaps.size() > 0){
             obstructed.add(label);
         } else {

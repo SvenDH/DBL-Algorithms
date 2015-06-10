@@ -155,16 +155,14 @@ public class LabelPlacer {
         }
         
         LabelSolver labelSolver;
-        //SliderSolver sliderSolver;
         /*
          * Todo: chose best algorithm for numberOfPoints and model
          */
-        //if (numberOfPoints <= NB) {
-        //    labelSolver = BruteForceSolver.getInstance(width, height);
-        //} else {
+        if (model.equals("1slider")) {
             labelSolver = new ForceDirectedSimulatedAnnealing(width, height);
-            //sliderSolver = new FDL1Slider(width, height);
-        //}
+        } else {
+            labelSolver = new GreedyGeneral(width, height);
+        }
 
         if (model.equals("2pos")) {
             outputList = labelSolver.getLabeledPoints2pos(inputList);

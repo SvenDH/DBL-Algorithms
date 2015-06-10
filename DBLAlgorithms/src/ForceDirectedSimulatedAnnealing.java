@@ -123,6 +123,11 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
 	return null;
     }
     
+    void randomPlace(ForceLabel label) {
+        double shift = Math.random();
+        label.x = label.point.x - width + (int)(shift * (double)width);
+    }
+    
     void findEquilibrium (ForceLabel label) {
         if (Math.abs(label.totalForce) < MIN_FORCE) {
             System.out.println("Label already in equilibrium");

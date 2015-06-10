@@ -10,6 +10,8 @@ import java.util.Set;
 
 
 public class ForceDirectedSimulatedAnnealing extends LabelSolver {
+    final int MAX_ITERATIONS = 2000000;
+    
     final double MIN_FORCE = 0.5;
     
     final double DEFAULT_FORCE_FAKT_OVERLAPPING = 10.0;
@@ -114,7 +116,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         System.out.println("Total force: " + labelList.get(0).totalForce);
         */
         
-        while (!obstructed.isEmpty()) {
+        while (!obstructed.isEmpty() && nIterations < MAX_ITERATIONS) {
             nIterations ++;
             System.out.println("Iteration: " + nIterations + " force: " + overallForce);
             ForceLabel current = chooseNextCandidate();
@@ -147,12 +149,12 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
 
                 Iterator<ForceLabel> ni = current.neighbours.keySet().iterator();
                 while (ni.hasNext()){
-                        ForceLabel ln = ni.next();
-                        if(ln.isOverlapping() || canSlide(ln))
-                                obstructed.add(ln);
-                        else
-                                obstructed.remove(ln);
-                }
+                    ForceLabel ln = ni.next();
+                    if(ln.isOverlapping() || canSlide(ln))
+                        obstructed.add(ln);
+                    else
+                        obstructed.remove(ln);
+            }
 
                 nTaken ++;
                 if(Math.abs(dE) < MIN_FORCE)
@@ -184,7 +186,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
 
                 if(candidate == null){
                     //We are done
-                    break;
+                    //break;
                 } else {
 
                     if(nTaken - nUnsignificant <= 0){
@@ -241,6 +243,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     
     void removeLabel(ForceLabel label) {
         label.unplacable = true;
+        label.point.label = null;
         obstructed.remove(label);
         
         overallForce -= Math.abs(label.totalForce);

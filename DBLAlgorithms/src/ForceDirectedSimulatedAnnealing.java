@@ -51,18 +51,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         ArrayList<ForceLabel> labelList = new ArrayList<ForceLabel>();
         obstructed = new HashSet<ForceLabel>();
         
-        //Place labels on random position
-        for (Point point : points) {
-            double shift = Math.random();
-            //System.out.println(shift);
-            int xPos = (int)(shift * (double)width);
-            ForceLabel label = new ForceLabel(point.x - width + xPos, point.y);
-            ForcePointData pointData = new ForcePointData(point.x, point.y, label);
-            label.point = pointData;
-            pointList.add(pointData);
-            labelList.add(label);
-            QT.insert(label);
-        }
+        randomPlacement();
         
         //Find neighbour
         for (ForceLabel label : labelList){
@@ -105,6 +94,21 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         }
         
         return pointList;
+    }
+    
+    void randomPlacement(){
+    //Place labels on random position
+        for (Point point : points) {
+            double shift = Math.random();
+            //System.out.println(shift);
+            int xPos = (int)(shift * (double)width);
+            ForceLabel label = new ForceLabel(point.x - width + xPos, point.y);
+            ForcePointData pointData = new ForcePointData(point.x, point.y, label);
+            label.point = pointData;
+            pointList.add(pointData);
+            labelList.add(label);
+            QT.insert(label);
+        }
     }
     
     ForceLabel chooseNextCandidate(){

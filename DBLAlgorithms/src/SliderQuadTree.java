@@ -52,6 +52,7 @@ class SliderQuadTree {
         Interval2D<Integer> rect = new Interval2D<Integer>(intX, intY);
         HashSet<ForceLabel> result = new HashSet<>();
         query2D(root, rect, result);
+        result.remove(label);
         return new ArrayList<>(result);
     }
 

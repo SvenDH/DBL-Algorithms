@@ -70,17 +70,31 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             for(ForceLabel otherLabel : neighbours){
                 double force = 0.0;
                 if((label.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > label.x){ //Are the labels overlapping?
-                    if(label.x > otherLabel.x){ //other label is right from this label
-                        force = DEFAULT_FORCE_FAKT_OVERLAPPING * (otherLabel.x + Globals.width) - label.x + DEFAULT_OVERLAPPING_PENALTY;
-                    } else { //other label is left from this label
+                    if(label.x > otherLabel.x){ //other label is left from this label
+                        force = DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY;
+                    } else if(label.x < otherLabel.x){ //other label is right from this label
                         force = -DEFAULT_FORCE_FAKT_OVERLAPPING * ((label.x + Globals.width) - otherLabel.x) - DEFAULT_OVERLAPPING_PENALTY;
+                    } else { //Labels are on the same position
+                        force = -otherLabel.neighbours.getOrDefault(label, DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY);
                     }
                 }
-                label.
+                label.totalForce += force;
                 label.neighbours.put(otherLabel, force);
             }
-            
+            overallForce += Math.abs(label.totalForce);
         }
+        
+        for (ForceLabel otherLabel : labelList.get(0).neighbours.keySet()) {
+            System.out.println("Force: " + labelList.get(0).neighbours.get(otherLabel));
+        }
+        System.out.println("Total force: " + labelList.get(0).totalForce);
+        
+        updateForces(labelList.get(0));
+        
+        for (ForceLabel otherLabel : labelList.get(0).neighbours.keySet()) {
+            System.out.println("Force: " + labelList.get(0).neighbours.get(otherLabel));
+        }
+        System.out.println("Total force: " + labelList.get(0).totalForce);
         
         while (!obstructed.isEmpty()) {
             nIterations ++;
@@ -142,35 +156,23 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     }
     
     void updateForces(ForceLabel label) {
-        for(ForceLabel otherLabel : label.neighbours.keySet()) {
-            overallForce -= Math.abs(otherLabel.totalForce);
-            
-            otherLabel.neighbours.remove(label);
-            otherLabel.totalForce -= otherLabel.neighbours.get(label);
-        }
-        
         overallForce -= Math.abs(label.totalForce);
-        
-        List<ForceLabel> overlaps = new ArrayList<>(label.neighbours.keySet());
-        if (overlaps.size() > 0){
-            obstructed.add(label);
-        } else {
-            obstructed.remove(label);
-        }
-        
-        label.neighbours.clear();
         label.totalForce = 0.0;
         
-        for(ForceLabel otherLabel : overlaps){
-            double force = 0.0;
-            if(label.x > otherLabel.x){ //other label is right from this label
-                force = DEFAULT_FORCE_FAKT_OVERLAPPING * (otherLabel.x + Globals.width) - label.x + DEFAULT_OVERLAPPING_PENALTY;
-            } else { //other label is left from this label
-                force = -DEFAULT_FORCE_FAKT_OVERLAPPING * ((label.x + Globals.width) - otherLabel.x) - DEFAULT_OVERLAPPING_PENALTY;
-            }
+        for(ForceLabel otherLabel : label.neighbours.keySet()) {
+            overallForce -= Math.abs(otherLabel.totalForce);
+            otherLabel.totalForce -= otherLabel.neighbours.get(label);
             
-            label.neighbours.put(otherLabel, force);
-            otherLabel.neighbours.put(label, -force);
+            double force = 0.0;
+            if((label.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > label.x){ //Are the labels overlapping?
+                if(label.x > otherLabel.x){ //other label is left from this label
+                    force = DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY;
+                } else if(label.x < otherLabel.x){ //other label is right from this label
+                    force = -DEFAULT_FORCE_FAKT_OVERLAPPING * ((label.x + Globals.width) - otherLabel.x) - DEFAULT_OVERLAPPING_PENALTY;
+                } else { //Labels are on the same position
+                    force = -otherLabel.neighbours.getOrDefault(label, DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY);
+                }
+            }
             
             label.totalForce += force;
             otherLabel.totalForce += -force;

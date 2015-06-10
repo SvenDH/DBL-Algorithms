@@ -6,4 +6,5 @@ class Globals {
         static int width;
         static int height;
         static int numberOfPoints;
+        static int numberOfLabels = 0;
 }

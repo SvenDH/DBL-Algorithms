@@ -35,8 +35,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     int height;
     
     List<PointData> pointList;
-    ArrayList<ForceLabel> labelList;
-            
+    
     SliderQuadTree QT;
      
     public ForceDirectedSimulatedAnnealing(int width, int height) {
@@ -44,15 +43,26 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         this.height = height;
         pointList = new ArrayList<>();
         QT = new SliderQuadTree();
-        labelList = new ArrayList<ForceLabel>();
     }
 
     @Override
     List<PointData> getLabeledPoints1slider(List<Point> points) {
         
+        ArrayList<ForceLabel> labelList = new ArrayList<ForceLabel>();
         obstructed = new HashSet<ForceLabel>();
         
-        randomPlacement(points);
+        //Place labels on random position
+        for (Point point : points) {
+            double shift = Math.random();
+            //System.out.println(shift);
+            int xPos = (int)(shift * (double)width);
+            ForceLabel label = new ForceLabel(point.x - width + xPos, point.y);
+            ForcePointData pointData = new ForcePointData(point.x, point.y, label);
+            label.point = pointData;
+            pointList.add(pointData);
+            labelList.add(label);
+            QT.insert(label);
+        }
         
         //Find neighbour
         for (ForceLabel label : labelList){
@@ -78,6 +88,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             System.out.println("Force: " + labelList.get(0).neighbours.get(otherLabel));
         }
         System.out.println("Total force: " + labelList.get(0).totalForce);
+        System.out.println("Overal force: " + overallForce);
         
         updateForces(labelList.get(0));
         
@@ -95,21 +106,6 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         }
         
         return pointList;
-    }
-    
-    void randomPlacement(List<Point> points){
-    //Place labels on random position
-        for (Point point : points) {
-            double shift = Math.random();
-            //System.out.println(shift);
-            int xPos = (int)(shift * (double)width);
-            ForceLabel label = new ForceLabel(point.x - width + xPos, point.y);
-            ForcePointData pointData = new ForcePointData(point.x, point.y, label);
-            label.point = pointData;
-            pointList.add(pointData);
-            labelList.add(label);
-            QT.insert(label);
-        }
     }
     
     ForceLabel chooseNextCandidate(){
@@ -152,6 +148,9 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         
         while (iteration < 20 && Math.abs(label.totalForce) >= MIN_FORCE){
             label.x += old_direction * amount;
+            if(label.x < label.point.x - Globals.width){
+                label.x = label.point.x - Globals.width;
+            }
             
             updateForces(label);
             

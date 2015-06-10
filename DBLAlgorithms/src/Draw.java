@@ -143,7 +143,7 @@ class Draw extends JPanel {
                 double value = Double.parseDouble(info);
                 value *= Globals.width;
                 g2d.setColor(Color.GREEN);
-                g2d.fillRect(point.x - Globals.width + (int)value, point.y, Globals.width + (int)value, Globals.height);
+                g2d.fillRect(point.x - Globals.width + (int)value, point.y, Globals.width, Globals.height);
             }
         }
     }

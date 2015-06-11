@@ -12,7 +12,7 @@ import java.util.Set;
 public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     final int MAX_ITERATIONS = Integer.MAX_VALUE;
     
-    final double MIN_FORCE = 0.5;
+    final double MIN_FORCE = 0.00001;
     
     final double DEFAULT_FORCE_FAKT_REPULSIVE = 1.0;
     final double DEFAULT_FORCE_FAKT_OVERLAPPING = 10.0;
@@ -189,6 +189,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
 
                 //adjust moves_per_stage
                 moves_per_stage = Math.max(Globals.numberOfPoints, Math.min(50 * obstructed.size(), 10 * Globals.numberOfPoints));
+                //moves_per_stage = 2 * obstructed.size();
 
                 nStages++;
 

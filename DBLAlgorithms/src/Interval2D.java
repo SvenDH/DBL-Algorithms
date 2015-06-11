@@ -6,7 +6,7 @@
  *
  *************************************************************************/
 
-class Interval2D<Key extends Comparable<Key>> { 
+public class Interval2D<Key extends Comparable<Key>> { 
     public final Interval<Key> intervalX;   // x-interval
     public final Interval<Key> intervalY;   // y-interval
    

@@ -1,173 +1,191 @@
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 
 public class BruteForceSolver extends LabelSolver {
     
-    private static BruteForceSolver instance;
-    List<PointData> pointData;
+    int width;
+    int height;
+    List<PointData> pointList;
+    QuadTree QT;
+    Stack<LabelGeneral> disabledLabels;
+    Stack<PointGeneral> labeledPoints;
+    List<PointGeneral> bestSolution;
     
-    private BruteForceSolver(int width, int height) {
+    public BruteForceSolver(int width, int height) {
         this.width = width;
         this.height = height;
-        pointData = new ArrayList<>();
+        this.pointList = new ArrayList();
+        this.QT = new QuadTree(width, height);
+        this.disabledLabels = new Stack();
+        this.labeledPoints = new Stack();
+        this.bestSolution = new ArrayList();
     }
     
-    public static BruteForceSolver getInstance() {
-        return BruteForceSolver.instance;
-    }
-    
-    public static BruteForceSolver getInstance(int width, int height) {
-        return new BruteForceSolver(width, height);
-    }
-
-    /**
-     * First getMaxLabels is called to fill the stack.
-     * All that's left after is to use the stack stored 
-     * in the instance of BruteForceSolver to execute the commands which lead
-     * to the ideal placement of labels.
-     * @param points 
-     */
-    @Override
-    public List<PointData> getLabeledPoints4pos(List<Point> points) {
-        for (Point point : points)
-            pointData.add(new PointData4Pos(point.x, point.y));
-        Stack<PlaceLabelCommand> commands = getMaxLabels(new Stack<PlaceLabelCommand>(), 0, 0, pointData);
-        while (!commands.empty()) {
-            commands.pop().execute();
-        }
-        return pointData;
-    }
-  
-    private Stack<PlaceLabelCommand> getMaxLabels(Stack<PlaceLabelCommand> commands, int labels, int maxLabels, List<PointData> points) {
-        if (maxLabels == points.size()) {
-            return commands;
-        }
-        List<PossibleLabel> possibleLabels = getPossibleLabels(points, commands);
-        for (PossibleLabel possibleLabel : possibleLabels) {
-            labels++;
-            if (labels > maxLabels) {
-                commands.add(new PlaceLabelCommand(
-                        possibleLabel.getPoint(), 
-                        possibleLabel.getVertical(), 
-                        possibleLabel.getHorizontal(), width, height));
-                return getMaxLabels(commands, labels, labels, points);
-            }
-        }
-        return commands;
-    }
-    
-    private List<PossibleLabel> getPossibleLabels(List<PointData> points, Stack<PlaceLabelCommand> commands) {
-        List<PossibleLabel> possibleLabels = new ArrayList<PossibleLabel>();
-        for (PointData point : points) {
-            //no points within NW range
-            if (!getCollision(point, 0, 2, commands)) {
-                possibleLabels.add(new PossibleLabel(point, 0, 2)); //NorthWest
-            }
-            //no points within NE range
-            if (!getCollision(point, 0, 3, commands)) {
-                possibleLabels.add(new PossibleLabel(point, 0, 3)); //NorthEast
-            }
-            //no points within SW range
-            if (!getCollision(point, 1, 2, commands)) {
-                possibleLabels.add(new PossibleLabel(point, 1, 2)); //SouthWest
-            }
-            //no points within SE range
-            if (!getCollision(point, 1, 3, commands)) {
-                possibleLabels.add(new PossibleLabel(point, 1, 3)); //SouthEast
-            }
-        }
-        return possibleLabels;
-    }
-    
-    private boolean getCollision(PointData point, int vertical, int horizontal, Stack<PlaceLabelCommand> commands) {
-        List<PlaceLabelCommand> commandsArray = new ArrayList<PlaceLabelCommand>();
-        while (!commands.empty()) {
-            commandsArray.add(commands.pop());
-        }
-        boolean result = false;
-        int x = point.x;
-        int y = point.y;
-        //Making sure the x and y we use are at the top left corner of the label
-        if (horizontal == 2) { 
-            x -= width;
-        }
-        if (vertical == 0) {
-            y -= height;
+    public void bruteForce(List<PointGeneral> currentSolution, final List<PointGeneral> labelPoints) {
+        if (bestSolution.size() == Globals.numberOfPoints) {
+            return;
         }
         
-        for (int i = 0; i < commandsArray.size(); i++) {
-            if (commandsArray.get(i).getVertical() == 0) {
-                if (commandsArray.get(i).getHorizontal() == 2) { //NW case
-                    if (x < commandsArray.get(i).getPoint().x 
-                            && commandsArray.get(i).getPoint().x < x + 2 * width
-                            && commandsArray.get(i).getPoint().y < y
-                            && y - 2 * height < commandsArray.get(i).getPoint().y) {
-                        result = true;
+        for (PointGeneral point : labelPoints) {
+            for (LabelGeneral label : point.labels) {
+                if (!disabledLabels.contains(label) && !labeledPoints.contains(point)) {
+                    int removedLAmount = 0;
+                    if (label.overlappingLabels != null) {
+                        for (LabelGeneral overlap : label.overlappingLabels) {
+                                disabledLabels.push(overlap);
+                                removedLAmount++;
+                        }
                     }
-                } else if (commandsArray.get(i).getHorizontal() == 3) { //NE case
-                    if (x - width < commandsArray.get(i).getPoint().x
-                            && commandsArray.get(i).getPoint().x < x + width
-                            && commandsArray.get(i).getPoint().y < y
-                            && y - 2 * height < commandsArray.get(i).getPoint().y) {
-                        result = true;
+                    disabledLabels.push(label);
+                    labeledPoints.push(point);
+                    PointGeneral labelPoint = new PointGeneral(point.x, point.y);
+                    labelPoint.labels.add(label);
+                    currentSolution.add(labelPoint);
+                    if (currentSolution.size() > bestSolution.size()) {
+                        bestSolution = new ArrayList(currentSolution);
                     }
-                }
-            } else if (commandsArray.get(i).getVertical() == 1) {
-                if (commandsArray.get(i).getHorizontal() == 2) { //SW case
-                    if (x < commandsArray.get(i).getPoint().x 
-                            && commandsArray.get(i).getPoint().x < x + 2 * width
-                            && commandsArray.get(i).getPoint().y < y + height
-                            && y - height < commandsArray.get(i).getPoint().y) {
-                        result = true;
-                    }
-                } else if (commandsArray.get(i).getHorizontal() == 3) { //SE case
-                    if (x - width < commandsArray.get(i).getPoint().x 
-                            && commandsArray.get(i).getPoint().x < x + width
-                            && commandsArray.get(i).getPoint().y < y + height
-                            && y - height < commandsArray.get(i).getPoint().y) {
-                        result = true;
+                    bruteForce(currentSolution, labelPoints);
+                    currentSolution.remove(labelPoint);
+                    disabledLabels.pop();
+                    labeledPoints.pop();
+                    while (removedLAmount > 0) {
+                        disabledLabels.pop();
+                        removedLAmount--;
                     }
                 }
             }
         }
-        return result;
     }
 
     @Override
-    public List<PointData> getLabeledPoints2pos(List<Point> points) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    List<PointData> getLabeledPoints2pos(List<Point> points) {
+        
+        List<PointGeneral> labelPoints = new ArrayList();
+        
+        for(Point point : points) {
+            PointGeneral pointData = new PointGeneral(point.x, point.y);
+            pointList.add(pointData);
+            //Create new labels for this point
+            Set<PointGeneral> labelPositions = new HashSet<>(2);
+            labelPositions.add(new PointGeneral(point.x, point.y));
+            labelPositions.add(new PointGeneral(point.x - width, point.y));
+            //Put new labels in datastructures
+            for (PointGeneral pos : labelPositions) {
+                LabelGeneral label;
+                if (pos.labels.isEmpty()) {
+                    label = new LabelGeneral(pointData, pos.x, pos.y);
+                    pointData.labels.add(label);
+                    QT.insert(label);
+                } else {
+                    label = pos.labels.get(0);
+                    label.points.add(pointData);
+                }
+            }
+            labelPoints.add(pointData);
+        }
+        
+        //Find overlaps
+        findOverlaps(labelPoints);
+        
+        //Put the greedy choice in bestSolution first
+        
+
+        //Place labels
+        bruteForce(new ArrayList(), labelPoints);
+        
+        //Use the bestSolution to get the output
+        for (PointGeneral pointData : bestSolution) {
+            PointData checkPoint = null;
+            for (PointData point : this.pointList) {
+                if(pointData.x == point.x && pointData.y == point.y) {
+                    checkPoint = point;
+                }
+            }
+            this.pointList.remove(checkPoint);
+            this.pointList.add(pointData);
+        }
+        
+        return this.pointList;
     }
 
     @Override
-    public List<PointData> getLabeledPoints1slider(List<Point> points) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    List<PointData> getLabeledPoints4pos(List<Point> points) {
+        
+        List<PointGeneral> labelPoints = new ArrayList();
+        
+        for(Point point : points) {
+            PointGeneral pointData = new PointGeneral(point.x, point.y);
+            pointList.add(pointData);
+            //Create new labels for this point
+            Set<PointGeneral> labelPositions = new HashSet<>(4);
+            labelPositions.add(new PointGeneral(point.x, point.y));
+            labelPositions.add(new PointGeneral(point.x - width, point.y));
+            labelPositions.add(new PointGeneral(point.x, point.y - height));
+            labelPositions.add(new PointGeneral(point.x - width, point.y - height));
+            //Put new labels in datastructures
+            for (PointGeneral pos : labelPositions) {
+                LabelGeneral label;
+                if (pos.labels.isEmpty()) {
+                    label = new LabelGeneral(pointData, pos.x, pos.y);
+                    pointData.labels.add(label);
+                    QT.insert(label);
+                } else {
+                    label = pos.labels.get(0);
+                    label.points.add(pointData);
+                }
+            }
+            labelPoints.add(pointData);
+        }
+        
+        //Find overlaps
+        findOverlaps(labelPoints);
+        
+        //Put the greedy choice in bestSolution first
+
+        //Place labels
+        bruteForce(new ArrayList(), labelPoints);
+        
+        //Use the bestSolution to get the output
+        for (PointGeneral pointData : bestSolution) {
+            PointData checkPoint = null;
+            for (PointData point : this.pointList) {
+                if(pointData.x == point.x && pointData.y == point.y) {
+                    checkPoint = point;
+                }
+            }
+            this.pointList.remove(checkPoint);
+            this.pointList.add(pointData);
+        }
+        
+        return this.pointList;
     }
 
-}
-
-class PossibleLabel {
-    private final PointData point;
-    private final int verticalDirection;
-    private final int horizontalDirection;
-    
-    public PossibleLabel(PointData point, int verticalDirection, int horizontalDirection) {
-        this.point = point;
-        this.verticalDirection = verticalDirection;
-        this.horizontalDirection = horizontalDirection;
-    }
-     
-    public PointData getPoint() {
-        return point;
+    @Override
+    List<PointData> getLabeledPoints1slider(List<Point> points) {
+        throw new UnsupportedOperationException("Not supported");
     }
     
-    public int getVertical() {
-        return verticalDirection;
-    }
-    
-    public int getHorizontal() {
-        return horizontalDirection;
+    /**
+     * Returns the labels contained in labelMap which collide with the specified label
+     * @param Label the specified label
+     * @param labelMap a set of labels 
+     * @return 
+     */
+    void findOverlaps(List<PointGeneral> labelPoints) {
+        for (PointGeneral pointData : labelPoints) {
+            for(LabelGeneral label : pointData.labels) {
+                //Create interval strictly smaller than this label
+                Interval2D<Integer> rect = new Interval2D<Integer>(
+                        new Interval<Integer>(label.x, label.x + width),
+                        new Interval<Integer>(label.y, label.y + height));
+                label.overlappingLabels = QT.query2D(rect);
+                label.overlappingLabels.remove(label);
+            }
+        }
     }
 }

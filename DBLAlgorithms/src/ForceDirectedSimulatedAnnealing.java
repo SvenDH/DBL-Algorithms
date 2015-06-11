@@ -105,6 +105,10 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         moves_per_stage = 30 * Globals.numberOfPoints;
         
         System.out.println("Starting annealing");
+        
+        long obstruction_per_second = obstructed.size()/300;
+        long startTime = System.nanoTime();
+        long oldTime = startTime;
         while (!obstructed.isEmpty() && nIterations < MAX_ITERATIONS) {
             nIterations ++;
             
@@ -186,16 +190,22 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
 
                 //decrease temperature
                 temperature = temperature * cooling_rate;
-
+                
+                long newTime = System.nanoTime();
+                long timeDifference = oldTime - newTime;
                 //adjust moves_per_stage
                 moves_per_stage = Math.max(Globals.numberOfPoints, Math.min(50 * obstructed.size(), 10 * Globals.numberOfPoints));
-                //moves_per_stage = 2 * obstructed.size();
+                //if (obstructed.size() > 0)
+                //    moves_per_stage /= obstructed.size();
+                //moves_per_stage = 3000;
 
                 nStages++;
 
                 nRejected = 0;
                 nTaken = 0;
                 nUnsignificant = 0;
+                
+                oldTime = newTime;
             }
         }
         
@@ -212,7 +222,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     
     void randomPlace(ForceLabel label) {
         double shift = Math.random();
-        label.x = label.point.x - width + (int)(shift * (double)width);
+        label.x = label.point.x - Globals.width + (int)(shift * (double)Globals.width);
         updateForces(label);
     }
     
@@ -280,7 +290,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             label.x += old_direction * amount;
             
             //Ensure it can't be placed outside its point range
-            if(label.x < label.point.x - Globals.width){
+            if(label.x + Globals.width < label.point.x){
                 label.x = label.point.x - Globals.width;
                 break;
             } else if(label.x > label.point.x) {

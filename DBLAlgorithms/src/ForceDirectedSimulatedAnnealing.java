@@ -77,6 +77,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
                 }
                 label.totalForce += force;
                 label.neighbours.put(otherLabel, force);
+                otherLabel.neighbours.put(label, -force);
             }
             overallForce += Math.abs(label.totalForce);
         }
@@ -106,7 +107,6 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         System.out.println("Starting annealing");
         while (!obstructed.isEmpty() && nIterations < MAX_ITERATIONS) {
             nIterations ++;
-            System.out.println("Iteration: " + nIterations + " force: " + overallForce + " obstructed: " + obstructed.size());
             
             ForceLabel current = chooseNextCandidate();
             
@@ -152,6 +152,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             }
             
             if (nTaken + nRejected >= moves_per_stage){
+                System.out.println("Iteration: " + nIterations + " temperature: " + temperature + " force: " + overallForce + " obstructed: " + obstructed.size());
                 int max_ovl = 0;
                 ForceLabel candidate = null;
 

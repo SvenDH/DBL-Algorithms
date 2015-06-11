@@ -18,6 +18,9 @@ public class ForceLabel extends Label {
     }
     
     boolean isOverlapping(){
+        if (unplacable)
+            return false;
+        
         for (ForceLabel otherLabel : neighbours.keySet()) {
             return (this.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > this.x;
         }

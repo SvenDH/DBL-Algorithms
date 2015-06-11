@@ -10,10 +10,11 @@ import java.util.Set;
 
 
 public class ForceDirectedSimulatedAnnealing extends LabelSolver {
-    final int MAX_ITERATIONS = 2000000;
+    final int MAX_ITERATIONS = Integer.MAX_VALUE;
     
     final double MIN_FORCE = 0.5;
     
+    final double DEFAULT_FORCE_FAKT_REPULSIVE = 1.0;
     final double DEFAULT_FORCE_FAKT_OVERLAPPING = 10.0;
     final double DEFAULT_FORCE_FAKT_EPS = 0.5;
     final double DEFAULT_OVERLAPPING_PENALTY = 3 * (1 / (DEFAULT_FORCE_FAKT_EPS * DEFAULT_FORCE_FAKT_EPS));
@@ -21,7 +22,6 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     double temperature = 0;
     double cooling_rate = 0;
     int    moves_per_stage = 0;
-    int    size = 0;
 
     int   nRejected = 0;
     int   nTaken = 0;
@@ -29,9 +29,9 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
     int   nStages = 0;
     int   nIterations = 0;
 
-    HashSet obstructed = null;
+    HashSet<ForceLabel> obstructed = null;
 
-    float overallForce = 0.0f;
+    double overallForce = 0.0;
     
     List<PointData> pointList;
     
@@ -47,7 +47,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         
         ArrayList<ForceLabel> labelList = new ArrayList<ForceLabel>();
         obstructed = new HashSet<ForceLabel>();
-        
+        System.out.println("Placing random labels");
         //Place labels on random position
         for (Point point : points) {
             double shift = Math.random();
@@ -60,7 +60,7 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             labelList.add(label);
             QT.insert(label);
         }
-        
+        System.out.println("Finding neighbours and initializing forces");
         //Find neighbour
         for (ForceLabel label : labelList){
             List<ForceLabel> neighbours = QT.findNeighbours(label);
@@ -83,16 +83,17 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         
         //init temperature && initialize set of obstructed labels...
         double avg_lbl_size = Globals.height * Globals.width;
+        System.out.println("Initializing obstruction set");
         for (ForceLabel label : labelList){
             if(!label.unplacable && (label.isOverlapping() || canSlide(label)))
                 obstructed.add(label);
         }
-
+        System.out.println("Initializing temperature and cooling rate");
         //we accept a overlap of p2 of the average label size with p1
         double p1 = 0.3; //propability of acceptance
         double p2 = 0.5; //percentage of overlap
         double eps_2 = DEFAULT_FORCE_FAKT_EPS * DEFAULT_FORCE_FAKT_EPS;
-        temperature = avg_lbl_size * p2 * DEFAULT_FORCE_FAKT_OVERLAPPING + DEFAULT_OVERLAPPING_PENALTY;
+        temperature = avg_lbl_size * p2 * DEFAULT_FORCE_FAKT_OVERLAPPING + DEFAULT_OVERLAPPING_PENALTY + DEFAULT_FORCE_FAKT_REPULSIVE / eps_2;
         temperature /= -Math.log(p1);
 
         //temp. should become < 1 after N stages...	
@@ -100,25 +101,13 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         cooling_rate = Math.pow(1. / temperature, 1. / N);
 
         //moves per stage...
-        moves_per_stage = 30 * size;
-        /*
-        for (ForceLabel otherLabel : labelList.get(0).neighbours.keySet()) {
-            System.out.println("Force: " + labelList.get(0).neighbours.get(otherLabel));
-        }
-        System.out.println("Total force: " + labelList.get(0).totalForce);
-        System.out.println("Overal force: " + overallForce);
+        moves_per_stage = 30 * Globals.numberOfPoints;
         
-        updateForces(labelList.get(0));
-        
-        for (ForceLabel otherLabel : labelList.get(0).neighbours.keySet()) {
-            System.out.println("Force: " + labelList.get(0).neighbours.get(otherLabel));
-        }
-        System.out.println("Total force: " + labelList.get(0).totalForce);
-        */
-        
+        System.out.println("Starting annealing");
         while (!obstructed.isEmpty() && nIterations < MAX_ITERATIONS) {
             nIterations ++;
-            System.out.println("Iteration: " + nIterations + " force: " + overallForce);
+            System.out.println("Iteration: " + nIterations + " force: " + overallForce + " obstructed: " + obstructed.size());
+            
             ForceLabel current = chooseNextCandidate();
             
             double old_force = overallForce;
@@ -137,24 +126,24 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             double p = Math.random();
 
             if (dE > 0.0 && p > Math.exp(-dE / temperature)){
-                    //reject move
-                    current.x = old_position;
-                    updateForces(current);
-                    nRejected ++;
+                //reject move
+                current.x = old_position;
+                updateForces(current);
+                nRejected ++;
             }
             else {
                 //update set of obstructed labels....
                 if(!current.isOverlapping() && !canSlide(current))
-                        obstructed.remove(current);
+                    obstructed.remove(current);
 
                 Iterator<ForceLabel> ni = current.neighbours.keySet().iterator();
                 while (ni.hasNext()){
                     ForceLabel ln = ni.next();
-                    if(ln.isOverlapping() || canSlide(ln))
+                    if(ln.isOverlapping() || canSlide(ln)){
                         obstructed.add(ln);
-                    else
+                    }else
                         obstructed.remove(ln);
-            }
+                }
 
                 nTaken ++;
                 if(Math.abs(dE) < MIN_FORCE)
@@ -186,20 +175,19 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
 
                 if(candidate == null){
                     //We are done
-                    //break;
-                } else {
+                    break;
+                }
 
-                    if(nTaken - nUnsignificant <= 0){
-                        //Remove candidate label
-                        removeLabel(candidate);
-                    }
+                if(nTaken - nUnsignificant <= 0){
+                    //Remove candidate label
+                    removeLabel(candidate);
                 }
 
                 //decrease temperature
                 temperature = temperature * cooling_rate;
 
                 //adjust moves_per_stage
-                moves_per_stage = Math.max(size, Math.min(50 * obstructed.size(), 10 * size));
+                moves_per_stage = Math.max(Globals.numberOfPoints, Math.min(50 * obstructed.size(), 10 * Globals.numberOfPoints));
 
                 nStages++;
 
@@ -249,14 +237,17 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         overallForce -= Math.abs(label.totalForce);
         label.totalForce = 0.0;
         
-        for(ForceLabel otherLabel : label.neighbours.keySet()){            
+        for(ForceLabel otherLabel : label.neighbours.keySet()){
             overallForce -= Math.abs(otherLabel.totalForce);
             otherLabel.totalForce -= otherLabel.neighbours.get(label);
-            otherLabel.neighbours.remove(label);
+            otherLabel.neighbours.put(label, 0.0);
+            label.neighbours.put(otherLabel, 0.0);
             overallForce += Math.abs(otherLabel.totalForce);
-            if (otherLabel.neighbours.isEmpty()) {
+            //is the neighour still obstructed?
+            if(!otherLabel.unplacable && (otherLabel.isOverlapping() || canSlide(otherLabel)))
+                obstructed.add(otherLabel);
+            else
                 obstructed.remove(otherLabel);
-            }
         }
         
     }
@@ -305,8 +296,8 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             }
                     
             if(old_direction != new_direction){
-                    old_direction = new_direction;
-                    amount /= 2.;
+                old_direction = new_direction;
+                amount /= 2.;
             }
             
             iteration ++;
@@ -318,23 +309,26 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         label.totalForce = 0.0;
         
         for(ForceLabel otherLabel : label.neighbours.keySet()) {
-            overallForce -= Math.abs(otherLabel.totalForce);
-            otherLabel.totalForce -= otherLabel.neighbours.get(label);
-            
-            double force = 0.0;
-            if((label.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > label.x){ //Are the labels overlapping?
-                if(label.x > otherLabel.x){ //other label is left from this label
-                    force = DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY;
-                } else if(label.x < otherLabel.x){ //other label is right from this label
-                    force = -DEFAULT_FORCE_FAKT_OVERLAPPING * ((label.x + Globals.width) - otherLabel.x) - DEFAULT_OVERLAPPING_PENALTY;
-                } else { //Labels are on the same position
-                    force = -otherLabel.neighbours.getOrDefault(label, DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY);
+            if (!otherLabel.unplacable){
+                overallForce -= Math.abs(otherLabel.totalForce);
+                otherLabel.totalForce -= otherLabel.neighbours.get(label);
+                double force = 0.0;
+                if((label.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > label.x){ //Are the labels overlapping?
+                    if(label.x > otherLabel.x){ //other label is left from this label
+                        force = DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY;
+                    } else if(label.x < otherLabel.x){ //other label is right from this label
+                        force = -DEFAULT_FORCE_FAKT_OVERLAPPING * ((label.x + Globals.width) - otherLabel.x) - DEFAULT_OVERLAPPING_PENALTY;
+                    } else { //Labels are on the same position
+                        force = -otherLabel.neighbours.getOrDefault(label, DEFAULT_FORCE_FAKT_OVERLAPPING * ((otherLabel.x + Globals.width) - label.x) + DEFAULT_OVERLAPPING_PENALTY);
+                    }
                 }
+                
+                label.neighbours.put(otherLabel, force);
+                otherLabel.neighbours.put(label, -force);
+                label.totalForce += force;
+                otherLabel.totalForce += -force;
+                overallForce += Math.abs(otherLabel.totalForce);
             }
-            
-            label.totalForce += force;
-            otherLabel.totalForce += -force;
-            overallForce += Math.abs(otherLabel.totalForce);
         }
         
         overallForce += Math.abs(label.totalForce);

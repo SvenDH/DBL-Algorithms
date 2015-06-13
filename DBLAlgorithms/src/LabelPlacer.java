@@ -92,65 +92,35 @@ public class LabelPlacer {
         System.out.println(line);
         numberOfPoints = Integer.parseInt(line.substring(18));
         Globals.numberOfPoints = numberOfPoints;
-        line = sc.nextLine();
-        if ("random".equals(line)) {
-            Random randomGenerator = new Random();
-            int x = randomGenerator.nextInt(10000);
-            int y = randomGenerator.nextInt(10000);
-            inputList.add(new Point(x,y));
-            Globals.maxX = x;
-            Globals.minX = x;
-            Globals.maxY = y;
-            Globals.minY = y;
-            for (int i = 0; i < numberOfPoints - 1; i++) {
-                x = randomGenerator.nextInt(10000);
-                y = randomGenerator.nextInt(10000);
-                inputList.add(new Point(x,y));
-                if (x > Globals.maxX) {
-                    Globals.maxX = x;
-                } else
-                if (x < Globals.minX) {
-                    Globals.minX = x;
-                }
-                
-                if (y > Globals.maxY) {
-                    Globals.maxY = y;
-                } else
-                if (y < Globals.minY) {
-                    Globals.minY = y;
-                }
-            }
-        } else {
-            line = sc.nextLine();
-            String[] split = line.split("\\s+");
-            int x = Integer.parseInt(split[0]);
-            int y = Integer.parseInt(split[1]);
-            inputList.add(new Point(x,y));
-            Globals.maxX = x;
-            Globals.minX = x;
-            Globals.maxY = y;
-            Globals.minY = y;
-            //Process points
-            for (int i = 0; i < numberOfPoints - 1; i++) {
                 line = sc.nextLine();
-                // Splitting the input by spaces, with the space regex
-                split = line.split("\\s+");
-                x = Integer.parseInt(split[0]);
-                y = Integer.parseInt(split[1]);
-                inputList.add(new Point(x,y));
-                if (x > Globals.maxX) {
-                    Globals.maxX = x;
-                } else
-                if (x < Globals.minX) {
-                    Globals.minX = x;
-                }
-                
-                if (y > Globals.maxY) {
-                    Globals.maxY = y;
-                } else
-                if (y < Globals.minY) {
-                    Globals.minY = y;
-                }
+        String[] split = line.split("\\s+");
+        int x = Integer.parseInt(split[0]);
+        int y = Integer.parseInt(split[1]);
+        inputList.add(new Point(x,y));
+        Globals.maxX = x;
+        Globals.minX = x;
+        Globals.maxY = y;
+        Globals.minY = y;
+        //Process points
+        for (int i = 0; i < numberOfPoints - 1; i++) {
+            line = sc.nextLine();
+            // Splitting the input by spaces, with the space regex
+            split = line.split("\\s+");
+            x = Integer.parseInt(split[0]);
+            y = Integer.parseInt(split[1]);
+            inputList.add(new Point(x,y));
+            if (x > Globals.maxX) {
+                Globals.maxX = x;
+            } else
+            if (x < Globals.minX) {
+                Globals.minX = x;
+            }
+
+            if (y > Globals.maxY) {
+                Globals.maxY = y;
+            } else
+            if (y < Globals.minY) {
+                Globals.minY = y;
             }
         }
         

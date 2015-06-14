@@ -260,12 +260,14 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         //moves per stage...
         moves_per_stage = 30 * Globals.numberOfPoints;
         
-        long obstruction_per_second = obstructed.size()/300;
-        long startTime = System.nanoTime();
-        long oldTime = startTime;
-        while (!obstructed.isEmpty() && nIterations < MAX_ITERATIONS) {
-            nIterations ++;
-            
+        StopWatch sw = new StopWatch();
+        boolean timeout = false;
+        sw.start();
+        //long startTime = System.nanoTime();
+        //long oldTime = startTime;
+        while (!obstructed.isEmpty()) {
+            if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
+            //nIterations ++;
             ForceLabel current = chooseNextCandidate();
             
             double old_force = overallForce;
@@ -291,11 +293,12 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
             }
             else {
                 //update set of obstructed labels....
-                if(!current.isOverlapping() && !canSlide(current))
+                if(current.isOverlapping() && !canSlide(current))
                     obstructed.remove(current);
 
                 Iterator<ForceLabel> ni = current.neighbours.keySet().iterator();
                 while (ni.hasNext()){
+                    if (sw.getElapsedSeconds() >= 10L) { timeout = true; break; }
                     ForceLabel ln = ni.next();
                     if(ln.isOverlapping() || canSlide(ln)){
                         obstructed.add(ln);
@@ -318,12 +321,13 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
                 while(d.hasNext()){
                     ForceLabel label = d.next();
                     int n = 0;
-
+                    if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
                     Iterator<ForceLabel> it = label.neighbours.keySet().iterator();
                     while(it.hasNext()){
                         ForceLabel otherLabel = it.next();
                         if(!otherLabel.unplacable && ((label.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > label.x))
-                            n ++;
+                            n++;
+                        if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
                     }
 
                     if(n > max_ovl){
@@ -336,6 +340,8 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
                     //We are done
                     break;
                 }
+                
+                if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
 
                 if(nTaken - nUnsignificant <= 0){
                     //Remove candidate label
@@ -345,24 +351,27 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
                 //decrease temperature
                 temperature = temperature * cooling_rate;
                 
-                long newTime = System.nanoTime();
-                long timeDifference = oldTime - newTime;
+                //long newTime = System.nanoTime();
+                //long timeDifference = oldTime - newTime;
+                
                 //adjust moves_per_stage
                 moves_per_stage = Math.max(Globals.numberOfPoints, Math.min(50 * obstructed.size(), 10 * Globals.numberOfPoints));
-                //if (obstructed.size() > 0)
-                //    moves_per_stage /= obstructed.size();
-                //moves_per_stage = 3000;
-
+                
                 nStages++;
 
                 nRejected = 0;
                 nTaken = 0;
                 nUnsignificant = 0;
                 
-                oldTime = newTime;
+                //oldTime = newTime;
             }
+            if (sw.getElapsedSeconds() >= 10L) { timeout = true; break; }
         }
-        
+        sw.stop();
+        if (!obstructed.isEmpty() && timeout)
+            for (ForceLabel l : labelList) {
+                if (l.isOverlapping()) removeLabel(l); 
+            }
         return pointList;
     }
     

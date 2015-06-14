@@ -172,6 +172,6 @@ public class LabelPlacer {
         }
         System.out.println("There are " + sum + " overlaps");
         */
-        Draw.createAndShowGUI();     
+        //Draw.createAndShowGUI();     
     }
 }

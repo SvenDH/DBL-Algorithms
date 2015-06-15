@@ -80,32 +80,5 @@ class QuadTree {
         if (xmax >= h.x &&  ymin < h.y) query2D(h.SE, rect, result);
         if (xmax >= h.x && ymax >= h.y) query2D(h.NE, rect, result);
     }
-    //public static void main(String[] args) {
-    //    LabelPlacer.main(args);
-    //}
-    
-    public static void main(String[] args) {
-        QuadTree st = new QuadTree(10,10);
-
-        // insert N random points in the unit square
-        for (int i = 0; i < 1; i++) {
-            int x = 0;
-            int y = 0;
-            st.insert(new LabelGeneral(new PointGeneral(x, y), x, y));
-        }
-        // do some range searches
-        for (int i = 0; i < 1; i++) {
-            int x = 0;
-            int y = 0;
-            LabelGeneral label = new LabelGeneral(new PointGeneral(x, y), x, y);
-            Interval<Integer> intX = new Interval<Integer>(x, x + 10);
-            Interval<Integer> intY = new Interval<Integer>(y, y + 10);
-            Interval2D<Integer> rect = new Interval2D<Integer>(intX, intY);
-            System.out.println(rect + " : ");
-            for(Label otherLabel : st.query2D(rect)){
-                System.out.print("[" + otherLabel.x + ", " + otherLabel.y + "]");
-            }
-        }
-    }
     
 }

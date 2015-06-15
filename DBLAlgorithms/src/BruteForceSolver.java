@@ -10,6 +10,9 @@ public class BruteForceSolver extends LabelSolver {
     
     int width;
     int height;
+    int bestLength;
+    int greedyNils;
+    int nilLabels;
     List<PointData> pointList;
     QuadTree QT;
     Stack<LabelGeneral> disabledLabels;
@@ -19,6 +22,8 @@ public class BruteForceSolver extends LabelSolver {
     public BruteForceSolver(int width, int height) {
         this.width = width;
         this.height = height;
+        this.bestLength = 0;
+        this.nilLabels = 0;
         this.pointList = new ArrayList();
         this.QT = new QuadTree(width, height);
         this.disabledLabels = new Stack();
@@ -32,30 +37,45 @@ public class BruteForceSolver extends LabelSolver {
         }
         
         for (PointGeneral point : labelPoints) {
-            for (LabelGeneral label : point.labels) {
-                if (!disabledLabels.contains(label) && !labeledPoints.contains(point)) {
-                    int removedLAmount = 0;
-                    if (label.overlappingLabels != null) {
-                        for (LabelGeneral overlap : label.overlappingLabels) {
-                                disabledLabels.push(overlap);
-                                removedLAmount++;
-                        }
-                    }
-                    disabledLabels.push(label);
-                    labeledPoints.push(point);
+            if (!labeledPoints.contains(point)) {
+                for (LabelGeneral label : point.labels) {
                     PointGeneral labelPoint = new PointGeneral(point.x, point.y);
-                    labelPoint.labels.add(label);
+                    int removedLAmount = 0;
+                    boolean labelCheck = false;
+                    if (!disabledLabels.contains(label)) {
+                        labelCheck = true;
+                        if (label.overlappingLabels != null) {
+                            for (LabelGeneral overlap : label.overlappingLabels) {
+                                    disabledLabels.push(overlap);
+                                    removedLAmount++;
+                            }
+                        }
+                        disabledLabels.push(label);
+                        labelPoint.labels.add(label);
+                    } else {
+                        nilLabels++;
+                    }
+                    if (nilLabels >= greedyNils) {
+                        nilLabels--;
+                        return;
+                    }
+                    labeledPoints.push(labelPoint);
                     currentSolution.add(labelPoint);
-                    if (currentSolution.size() > bestSolution.size()) {
+                    if (currentSolution.size() > bestLength) {
                         bestSolution = new ArrayList(currentSolution);
+                        bestLength = bestSolution.size();
                     }
                     bruteForce(currentSolution, labelPoints);
                     currentSolution.remove(labelPoint);
-                    disabledLabels.pop();
                     labeledPoints.pop();
-                    while (removedLAmount > 0) {
+                    if (labelCheck) {
                         disabledLabels.pop();
-                        removedLAmount--;
+                        while (removedLAmount > 0) {
+                            disabledLabels.pop();
+                            removedLAmount--;
+                        }
+                    } else {
+                        nilLabels--;
                     }
                 }
             }
@@ -93,24 +113,39 @@ public class BruteForceSolver extends LabelSolver {
         findOverlaps(labelPoints);
         
         //Put the greedy choice in bestSolution first
-        
-
-        //Place labels
-        bruteForce(new ArrayList(), labelPoints);
-        
-        //Use the bestSolution to get the output
-        for (PointGeneral pointData : bestSolution) {
-            PointData checkPoint = null;
-            for (PointData point : this.pointList) {
-                if(pointData.x == point.x && pointData.y == point.y) {
-                    checkPoint = point;
-                }
+        LabelSolver greedy = new GreedyGeneral(this.width, this.height);
+        List<PointData> greedySolution = greedy.getLabeledPoints2pos(points);
+        for (PointData point : greedySolution) {
+            if (!point.getLabelInfo().equals("NIL")){
+                this.bestLength++;
             }
-            this.pointList.remove(checkPoint);
-            this.pointList.add(pointData);
         }
+        greedyNils = greedySolution.size() - bestLength;
         
-        return this.pointList;
+        //Put the labels into the pointList
+        if (this.bestLength != Globals.numberOfPoints) {
+            bruteForce(new ArrayList(), labelPoints);
+                        
+            if (bestSolution.size() <= bestLength) { //Bruteforce did not find a better than greedy solution
+                return greedySolution;
+            }
+            
+            //Use the bestSolution to get the output
+            for (PointGeneral pointData : bestSolution) {
+                PointData checkPoint = null;
+                for (PointData point : this.pointList) {
+                    if (pointData.x == point.x && pointData.y == point.y) {
+                        checkPoint = point;
+                    }
+                }
+                this.pointList.remove(checkPoint);
+                this.pointList.add(pointData);
+            }
+            
+            return this.pointList;
+        } else { //The greedy solution is optimal
+            return greedySolution;
+        }
     }
 
     @Override
@@ -146,23 +181,38 @@ public class BruteForceSolver extends LabelSolver {
         findOverlaps(labelPoints);
         
         //Put the greedy choice in bestSolution first
-
-        //Place labels
-        bruteForce(new ArrayList(), labelPoints);
-        
-        //Use the bestSolution to get the output
-        for (PointGeneral pointData : bestSolution) {
-            PointData checkPoint = null;
-            for (PointData point : this.pointList) {
-                if(pointData.x == point.x && pointData.y == point.y) {
-                    checkPoint = point;
-                }
+        LabelSolver greedy = new GreedyGeneral(this.width, this.height);
+        List<PointData> greedySolution = greedy.getLabeledPoints4pos(points);
+        for (PointData point : greedySolution) {
+            if (!point.getLabelInfo().equals("NIL")){
+                this.bestLength++;
             }
-            this.pointList.remove(checkPoint);
-            this.pointList.add(pointData);
         }
         
-        return this.pointList;
+        //Put the labels into the pointList
+        if (this.bestLength != Globals.numberOfPoints) {
+            bruteForce(new ArrayList(), labelPoints);
+            
+            if (bestSolution.size() <= bestLength) { //Bruteforce did not find a better than greedy solution
+                return greedySolution;
+            }
+            
+            //Use the bestSolution to get the output
+            for (PointGeneral pointData : bestSolution) {
+                PointData checkPoint = null;
+                for (PointData point : this.pointList) {
+                    if(pointData.x == point.x && pointData.y == point.y) {
+                        checkPoint = point;
+                    }
+                }
+                this.pointList.remove(checkPoint);
+                this.pointList.add(pointData);
+            }
+            
+            return this.pointList;
+        } else { //The greedy solution is optimal
+            return greedySolution;
+        }
     }
 
     @Override

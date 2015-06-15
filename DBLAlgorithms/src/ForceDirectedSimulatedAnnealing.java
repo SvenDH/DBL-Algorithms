@@ -106,7 +106,12 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         cooling_rate = Math.pow(1. / temperature, 1. / N);
 
         //moves per stage...
-        moves_per_stage = 30 * Globals.numberOfPoints;
+        if (Globals.numberOfPoints == 10000) {
+            moves_per_stage = 1;
+        } 
+        else {
+            moves_per_stage = 30 * Globals.numberOfPoints;
+        }
         
         while (!obstructed.isEmpty() && nIterations < MAX_ITERATIONS) {
             nIterations ++;

@@ -77,11 +77,29 @@ public class LabelPlacer {
         for (int k = 0; k < 3; k++) {
             inputList = RandomRunner.run();
             switch (k) {
-                case 0: model = "2pos";
+                case 0: model = "2pos";  
+                        if (numberOfPoints <= 100){
+                            labelSolver = new BruteForceSolver(width, height);
+                        } else {
+                            labelSolver = new GreedyGeneral(width, height);
+                        }
+                        outputList = labelSolver.getLabeledPoints2pos(inputList);
+                        break;
                 case 1: model = "4pos";
+                        if (numberOfPoints <= 100){
+                            labelSolver = new BruteForceSolver(width, height);
+                        } else {
+                            labelSolver = new GreedyGeneral(width, height);
+                        }
+                        outputList = labelSolver.getLabeledPoints4pos(inputList);
+                        break;
                 case 2: model = "1slider";
+                        labelSolver = new ForceDirectedSimulatedAnnealing(width, height);
+                        outputList = labelSolver.getLabeledPoints1slider(inputList);
+                        break;
                 default: break;
             }
+            /*
         if (model.equals("1slider")) {
             labelSolver = new ForceDirectedSimulatedAnnealing(width, height);
         } else if (numberOfPoints <= 100){
@@ -99,7 +117,7 @@ public class LabelPlacer {
         } else {
             throw new IllegalArgumentException("Invalid model");
         }
- 
+ */
         int numberOfLabels = 0;
         for (int i = 0; i < numberOfPoints; i++) {
             PointData point = outputList.get(i);

@@ -265,13 +265,9 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
         //moves per stage...
         moves_per_stage = 30 * Globals.numberOfPoints;
         
-        StopWatch sw = new StopWatch();
-        boolean timeout = false;
-        sw.start();
         //long startTime = System.nanoTime();
         //long oldTime = startTime;
         while (!obstructed.isEmpty()) {
-            if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
             //nIterations ++;
             ForceLabel current = chooseNextCandidate();
             
@@ -303,7 +299,6 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
 
                 Iterator<ForceLabel> ni = current.neighbours.keySet().iterator();
                 while (ni.hasNext()){
-                    if (sw.getElapsedSeconds() >= 10L) { timeout = true; break; }
                     ForceLabel ln = ni.next();
                     if(ln.isOverlapping() || canSlide(ln)){
                         obstructed.add(ln);
@@ -326,13 +321,12 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
                 while(d.hasNext()){
                     ForceLabel label = d.next();
                     int n = 0;
-                    if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
                     Iterator<ForceLabel> it = label.neighbours.keySet().iterator();
                     while(it.hasNext()){
                         ForceLabel otherLabel = it.next();
                         if(!otherLabel.unplacable && ((label.x + Globals.width) > otherLabel.x && (otherLabel.x + Globals.width) > label.x))
                             n++;
-                        if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
+
                     }
 
                     if(n > max_ovl){
@@ -346,8 +340,8 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
                     break;
                 }
                 
-                if (sw.getElapsedSeconds() >= 10L) { timeout = true; break;}
 
+                
                 if(nTaken - nUnsignificant <= 0){
                     //Remove candidate label
                     removeLabel(candidate);
@@ -370,13 +364,8 @@ public class ForceDirectedSimulatedAnnealing extends LabelSolver {
                 
                 //oldTime = newTime;
             }
-            if (sw.getElapsedSeconds() >= 10L) { timeout = true; break; }
         }
-        sw.stop();
-        if (!obstructed.isEmpty() && timeout)
-            for (ForceLabel l : labelList) {
-                if (l.isOverlapping()) removeLabel(l); 
-            }
+       
         return pointList;
     }
     

@@ -21,9 +21,9 @@ public class LabelPlacer {
        
         Scanner sc = new Scanner(System.in);        
         String line;
-        line = sc.nextLine();
-        System.out.println(line);
-        model = line.substring(17);
+        //line = sc.nextLine();
+        //System.out.println(line);
+        //model = line.substring(17);
         line = sc.nextLine();
         System.out.println(line);
         width = Integer.parseInt(line.substring(7));
@@ -36,42 +36,52 @@ public class LabelPlacer {
         System.out.println(line);
         numberOfPoints = Integer.parseInt(line.substring(18));
         Globals.numberOfPoints = numberOfPoints;
-                line = sc.nextLine();
-        String[] split = line.split("\\s+");
-        int x = Integer.parseInt(split[0]);
-        int y = Integer.parseInt(split[1]);
-        inputList.add(new Point(x,y));
-        Globals.maxX = x;
-        Globals.minX = x;
-        Globals.maxY = y;
-        Globals.minY = y;
-        //Process points
-        for (int i = 0; i < numberOfPoints - 1; i++) {
-            line = sc.nextLine();
-            // Splitting the input by spaces, with the space regex
-            split = line.split("\\s+");
-            x = Integer.parseInt(split[0]);
-            y = Integer.parseInt(split[1]);
-            inputList.add(new Point(x,y));
-            if (x > Globals.maxX) {
-                Globals.maxX = x;
-            } else
-            if (x < Globals.minX) {
-                Globals.minX = x;
-            }
-
-            if (y > Globals.maxY) {
-                Globals.maxY = y;
-            } else
-            if (y < Globals.minY) {
-                Globals.minY = y;
-            }
-        }
+        /*line = sc.nextLine();
         
+        String[] split = line.split("\\s+");
+            int x = Integer.parseInt(split[0]);
+            int y = Integer.parseInt(split[1]);
+            inputList.add(new Point(x,y));
+            Globals.maxX = x;
+            Globals.minX = x;
+            Globals.maxY = y;
+            Globals.minY = y; 
+            
+            //Process points
+            for (int i = 0; i < numberOfPoints - 1; i++) {
+                line = sc.nextLine();
+                // Splitting the input by spaces, with the space regex
+                split = line.split("\\s+");
+                x = Integer.parseInt(split[0]);
+                y = Integer.parseInt(split[1]);
+                inputList.add(new Point(x,y));
+                if (x > Globals.maxX) {
+                    Globals.maxX = x;
+                } else
+                if (x < Globals.minX) {
+                    Globals.minX = x;
+                }
+                
+                if (y > Globals.maxY) {
+                    Globals.maxY = y;
+                } else
+                if (y < Globals.minY) {
+                    Globals.minY = y;
+                }
+            }*/
+      
         LabelSolver labelSolver;
         /*
          * Todo: chose best algorithm for numberOfPoints and model
          */
+        for (int k = 0; k < 3; k++) {
+            inputList = RandomRunner.run();
+            switch (k) {
+                case 0: model = "2pos";
+                case 1: model = "4pos";
+                case 2: model = "1slider";
+                default: break;
+            }
         if (model.equals("1slider")) {
             labelSolver = new ForceDirectedSimulatedAnnealing(width, height);
         } else if (numberOfPoints <= 100){
@@ -89,7 +99,7 @@ public class LabelPlacer {
         } else {
             throw new IllegalArgumentException("Invalid model");
         }
-        
+ 
         int numberOfLabels = 0;
         for (int i = 0; i < numberOfPoints; i++) {
             PointData point = outputList.get(i);
@@ -105,6 +115,8 @@ public class LabelPlacer {
             System.out.println
                 (outputList.get(i).x + " " + outputList.get(i).y + " " + outputList.get(i).getLabelInfo());
         }
-        //Draw.createAndShowGUI();     
+        Draw Drawit = new Draw();
+        Drawit.createAndShowGUI();     
+        }
     }
 }

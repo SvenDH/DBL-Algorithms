@@ -46,9 +46,9 @@ public class LabelPlacer {
         for (int j = 0; j < n; j++) {
             numberOfPoints = arr[j];
             Globals.numberOfPoints = numberOfPoints;
+            inputList = RandomRunner.run();
             for (int k = 0; k < 3; k++) {
                 long time1 = System.currentTimeMillis();
-                inputList = RandomRunner.run();
                 switch (k) {
                     case 0: model = "2pos";  
                             labelSolver = new GreedyGeneral(width, height);

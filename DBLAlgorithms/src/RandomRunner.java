@@ -13,9 +13,10 @@ public class RandomRunner {
             while (i < Globals.numberOfPoints) {
                     int randX = StdRandom.uniform(10000);
                     int randY = StdRandom.uniform(10000);   
-                    if (!list.contains(new Point(randX, randY))) 
-                    list.add(new Point(randX, randY));
-                    i++;
+                    if (!list.contains(new Point(randX, randY))) {
+                        list.add(new Point(randX, randY));
+                        i++;
+                    }
             }                
         return list;
     }
